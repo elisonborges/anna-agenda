@@ -352,9 +352,9 @@ const draftImageInput=document.getElementById('neonDraftImage');
 draftImageInput.onchange=()=>{
 const file=draftImageInput.files?.[0];if(!file)return;
 if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>1048576){draftImageStatus.textContent='Selecione PNG, JPG ou WebP de até 1 MB.';draftImageInput.value='';return}
-const reader=new FileReader();reader.onload=()=>{neonDraftImageData=String(reader.result||'');draftImageStatus.textContent='Imagem pronta para a prévia. Guarde o rascunho para mantê-la nesta sessão.';if(!draftPreview.hidden)refreshDraftPreview()};reader.onerror=()=>{draftImageStatus.textContent='Falha ao ler imagem.'};reader.readAsDataURL(file);
+const reader=new FileReader();reader.onload=()=>{neonDraftImageData=String(reader.result||'');draftImageStatus.textContent='Imagem pronta para a prévia.';saveDraftInSession();if(!draftPreview.hidden)refreshDraftPreview()};reader.onerror=()=>{draftImageStatus.textContent='Falha ao ler imagem.'};reader.readAsDataURL(file);
 };
-document.getElementById('neonDraftRemoveImage').onclick=()=>{neonDraftImageData='';draftImageInput.value='';draftImageStatus.textContent='Imagem removida do rascunho.';if(!draftPreview.hidden)refreshDraftPreview()};
+document.getElementById('neonDraftRemoveImage').onclick=()=>{neonDraftImageData='';draftImageInput.value='';draftImageStatus.textContent='Imagem removida do rascunho.';saveDraftInSession();if(!draftPreview.hidden)refreshDraftPreview()};
 const draftPreview=document.getElementById('neonDraftPreview');
 const refreshDraftPreview=()=>{
 const record=available[Number(workSelect.value)];if(!record)return;
@@ -387,10 +387,9 @@ if(!popup){draftStatus.textContent='O navegador bloqueou a janela de impressão.
 const safe=txt=>txt.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 popup.document.open();popup.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Rascunho autenticado - AnnA Agenda</title><style>body{font:16px Arial,sans-serif;margin:25mm;line-height:1.55}pre{white-space:pre-wrap;font:inherit}@page{size:A4;margin:20mm}</style></head><body><pre>'+safe(draftPreview.textContent)+'</pre></body></html>');if(neonDraftImageData){const pic=popup.document.createElement('img');pic.src=neonDraftImageData;pic.alt='Imagem ilustrativa';pic.style.cssText='max-width:100%;max-height:100mm;object-fit:contain';popup.document.body.append(pic)}popup.document.close();popup.focus();popup.print();
 };
-for(const id of draftFields)document.getElementById(id).addEventListener('input',()=>{if(!draftPreview.hidden)refreshDraftPreview()});
-document.getElementById('neonDraftSave').onclick=()=>{
-try{const draft={image:neonDraftImageData};for(const id of draftFields)draft[id]=document.getElementById(id).value;sessionStorage.setItem(draftKey(),JSON.stringify(draft));draftStatus.textContent='Rascunho guardado somente nesta sessão. Não enviado ao Neon.'}catch{draftStatus.textContent='Falha ao guardar rascunho neste navegador.'}
-};
+const saveDraftInSession=()=>{try{const key=draftKey();if(!key)return false;const draft={image:neonDraftImageData};for(const id of draftFields)draft[id]=document.getElementById(id).value;sessionStorage.setItem(key,JSON.stringify(draft));draftStatus.textContent='Rascunho salvo automaticamente nesta sessão. Não enviado ao Neon.';return true}catch{draftStatus.textContent='Não foi possível guardar o rascunho nesta sessão.';return false}};
+for(const id of draftFields)document.getElementById(id).addEventListener('input',()=>{saveDraftInSession();if(!draftPreview.hidden)refreshDraftPreview()});
+document.getElementById('neonDraftSave').onclick=()=>{saveDraftInSession()};
 workSelect.onchange=()=>{showSelection();restoreDraft();draftPreview.hidden=true};workFields.hidden=false;showSelection();restoreDraft();
 }
 const context=document.getElementById('neonFormContext');
