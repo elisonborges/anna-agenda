@@ -412,8 +412,14 @@ previewPrint.onclick=()=>{
 refreshDraftPreview();
 const popup=window.open('','_blank','width=850,height=700');
 if(!popup){draftStatus.textContent='O navegador bloqueou a janela de impressão.';return}
-const safe=txt=>txt.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-popup.document.open();popup.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Rascunho autenticado - AnnA Agenda</title><style>body{font:16px Arial,sans-serif;margin:25mm;line-height:1.55}pre{white-space:pre-wrap;font:inherit}@page{size:A4;margin:20mm}</style></head><body><pre>'+safe(draftPreview.textContent)+'</pre></body></html>');if(neonDraftImageData){const pic=popup.document.createElement('img');pic.src=neonDraftImageData;pic.alt='Imagem ilustrativa';pic.style.cssText='max-width:100%;max-height:100mm;object-fit:contain';popup.document.body.append(pic)}popup.document.close();popup.focus();popup.print();
+const previewCopy=draftPreview.cloneNode(true);previewCopy.removeAttribute('id');
+for(const img of previewCopy.querySelectorAll('img')){if(!/^data:image\\/(png|jpeg|webp);base64,/i.test(img.getAttribute('src')||''))img.remove()}
+popup.document.open();
+popup.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Rascunho autenticado - AnnA Agenda</title><style>@page{size:A4;margin:18mm}body{font:14px Arial,sans-serif;line-height:1.5;color:#202b3b}h4{font-size:14px;margin:16px 0 5px;page-break-after:avoid}ul,ol{padding-left:25px}li{margin:3px 0}img{display:block;max-width:100%;max-height:95mm;object-fit:contain;break-inside:avoid;margin-top:14px}div{overflow-wrap:anywhere}p{margin:5px 0}</style></head><body></body></html>');
+popup.document.body.append(popup.document.importNode(previewCopy,true));
+popup.document.close();
+const images=[...popup.document.images];
+Promise.all(images.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve}))).then(()=>{popup.focus();popup.print()});
 };
 const saveDraftInSession=()=>{try{const key=draftKey();if(!key)return false;const draft={image:neonDraftImageData};for(const id of draftFields)draft[id]=draftValue(id);sessionStorage.setItem(key,JSON.stringify(draft));draftStatus.textContent='Rascunho salvo automaticamente nesta sessão. Não enviado ao Neon.';return true}catch{draftStatus.textContent='Não foi possível guardar o rascunho nesta sessão.';return false}};
 for(const id of draftFields)document.getElementById(id).addEventListener('input',()=>{saveDraftInSession();if(!draftPreview.hidden)refreshDraftPreview()});
