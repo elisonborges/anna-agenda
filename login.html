@@ -16,14 +16,31 @@ label{margin:9px 0 4px}input{padding:10px 12px}button{padding:11px;margin-top:13
 <header><a class="brand" href="https://annaone.com.br/" aria-label="AnnA One"><img src="assets/anna-symbol.svg" alt=""><div><b>AnnA <span>One</span></b><small>Tecnologia e Educação Juntas</small></div></a></header>
 <main><section class="panel" aria-labelledby="heading"><div class="eyebrow">AnnA One · Agenda Educacional</div><h1 id="heading">Acesso do Professor</h1><p>Seu espaço para organizar e registrar as atividades da agenda escolar.</p>
 <form id="auth-form"><label for="email">E-mail institucional</label><input id="email" type="email" autocomplete="username" placeholder="professor@escola.com.br" required><label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" placeholder="Sua senha" required><button id="enter" type="submit">Entrar</button></form>
+<section id="verify-panel" style="margin-top:14px;padding:14px;border:1px solid #cbd9e9;border-radius:12px" aria-labelledby="verify-title"><h2 id="verify-title" style="font-size:17px;margin:0 0 8px">Verificar e-mail da conta</h2><p>Para contas que ainda não verificaram o e-mail. O código será enviado pelo Neon Auth.</p><label for="verify-email">E-mail da conta</label><input id="verify-email" type="email" autocomplete="email" placeholder="seu@email.com"><button id="send-verify" type="button">Enviar código de verificação</button><label for="verify-otp">Código recebido por e-mail</label><input id="verify-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="Código de verificação"><button id="confirm-verify" type="button">Confirmar código</button><p id="verify-status" role="status" style="margin:12px 0 0"></p></section>
 <div class="notice" id="auth-status" role="status"><strong>Integração experimental com Neon Auth.</strong> O acesso será verificado no serviço de autenticação. A página do Professor usa apenas dados fictícios. A verificação de sessão no navegador não substitui autorização de backend.</div>
 <a class="preview" href="index.html">Ver página do Professor (requer login) →</a></section></main>
-<footer>AnnA One · Agenda Educacional · Ambiente experimental</footer><script>
+<footer>AnnA One · Agenda Educacional · Ambiente experimental · Login v0.10.11</footer><script>
 (()=>{'use strict';
 const AUTH='https://ep-broad-sound-b6rokoew.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
 const form=document.getElementById('auth-form'),status=document.getElementById('auth-status'),button=document.getElementById('enter');
 function message(text){status.textContent=text;}
 async function request(path,options={}){const r=await fetch(AUTH+path,{credentials:'include',cache:'no-store',...options});const payload=await r.json().catch(()=>({}));if(!r.ok||payload.error)throw new Error(payload.error?.message||'Falha na autenticação ('+r.status+').');return payload;}
+const verifyEmail=document.getElementById('verify-email'),verifyOtp=document.getElementById('verify-otp'),verifyStatus=document.getElementById('verify-status'),sendVerify=document.getElementById('send-verify'),confirmVerify=document.getElementById('confirm-verify');
+function verificationMessage(value){verifyStatus.textContent=value}
+sendVerify.addEventListener('click',async()=>{
+const email=(verifyEmail.value||document.getElementById('email').value).trim();if(!email||!verifyEmail.checkValidity()&&verifyEmail.value){verificationMessage('Informe um e-mail válido.');return}
+verifyEmail.value=email;sendVerify.disabled=true;verificationMessage('Solicitando código ao Neon Auth…');
+try{await request('/email-otp/send-verification-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,type:'email-verification'})});verificationMessage('Solicitação aceita. Verifique a caixa de entrada e o spam.');}
+catch(err){verificationMessage('Não foi possível solicitar o código: '+err.message)}
+finally{sendVerify.disabled=false}
+});
+confirmVerify.addEventListener('click',async()=>{
+const email=verifyEmail.value.trim(),otp=verifyOtp.value.trim();if(!email||!otp){verificationMessage('Informe o e-mail e o código recebido.');return}
+confirmVerify.disabled=true;verificationMessage('Confirmando código…');
+try{await request('/email-otp/verify-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,otp})});verifyOtp.value='';verificationMessage('E-mail verificado. Entre novamente com sua conta para atualizar a sessão.');}
+catch(err){verificationMessage('Não foi possível confirmar: '+err.message)}
+finally{confirmVerify.disabled=false}
+});
 form.addEventListener('submit',async e=>{e.preventDefault();button.disabled=true;message('Verificando credenciais com o Neon Auth…');const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;
 try{
 await request('/sign-in/email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
