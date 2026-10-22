@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>AnnA Agenda — Visão do Professor (validação) · AnnA Agenda — Versão 0.10.0 · Neon TESTE</title><style>
+:root{font-family:system-ui,Arial;color:#20354d;background:#eef3f8}*{box-sizing:border-box}body{margin:0}header.top{background:#172e52;color:white;padding:15px 4%}.top strong{font-size:21px}.top small{display:block;opacity:.85}main{max-width:1300px;margin:18px auto;padding:0 15px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}button{border:0;border-radius:7px;background:#185b9e;color:white;padding:9px 12px;cursor:pointer;font-weight:650}button.secondary,.tabs button{background:#e2ebf6;color:#19466e}.tabs button.active{background:#185b9e;color:white}.grid{display:grid;grid-template-columns:minmax(310px,430px) minmax(400px,1fr);gap:16px}.panel{background:white;border:1px solid #d7e1ed;border-radius:12px;padding:17px;margin-bottom:15px}h1{font-size:23px}h2{font-size:17px;margin:0 0 12px}h3{font-size:14px;margin:14px 0 7px}label{display:block;font-weight:650;font-size:13px;margin:10px 0 5px}input,select,textarea{font:inherit;border:1px solid #b9c9d9;border-radius:7px;padding:9px;width:100%;background:white}input:disabled{background:#edf1f5;color:#53667b}.row{display:flex;gap:9px}.row>*{flex:1;min-width:0}.hint{font-size:12px;color:#586d83;line-height:1.5}.note{padding:10px;background:#fff6e2;border-radius:8px;font-size:12px;line-height:1.5}.checks{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.checks .check{margin:0;padding:7px 10px;border:1px solid #cad8e6;border-radius:7px;font-weight:500}.checks input{width:auto}.checks button{flex:none}.editor{border:1px solid #b9c9d9;border-radius:8px;min-height:90px;padding:10px;overflow-wrap:anywhere;line-height:1.45}.editor:focus{outline:2px solid #8ab7e7}.editor img{max-width:100%;height:auto}.toolbar{margin:5px 0}.toolbar button{padding:5px 8px;font-size:12px;margin-right:4px}.item{border:1px solid #dbe4ef;border-radius:8px;padding:11px;margin:8px 0}.item button{margin:5px 5px 0 0}.item small{display:block;color:#63758a;margin-top:5px}.sheet{width:210mm;min-height:297mm;max-width:100%;background:white;color:#151515;padding:12mm 13mm;margin:auto;box-shadow:0 4px 18px #2343}.schoolhead{display:flex;align-items:center;justify-content:center;gap:12px;border-bottom:2px solid #444;text-align:center;padding-bottom:8px}.schoolhead img{max-width:85px;max-height:65px}.schoolhead h2{font-size:17px;margin:0 0 3px}.schoolhead p{font-size:12px;margin:3px}.banner{border:1px solid #777;text-align:center;padding:8px;font-weight:750;font-size:12px;margin:13px 0}.subject{margin-bottom:13px;break-inside:auto}.subject h3{font-size:14px;border-bottom:1px solid #aaa;margin:0 0 7px;padding-bottom:4px}.section{font-size:12px;line-height:1.42;overflow-wrap:anywhere;margin-bottom:7px}.section strong{display:block}.section p{margin:3px 0}.section img{max-width:100%;max-height:120mm;object-fit:contain}.section table{border-collapse:collapse;max-width:100%}.section td,.section th{border:1px solid #777;padding:4px}.foot{font-size:10px;text-align:right;border-top:1px solid #ccc;padding-top:7px;margin-top:20px}.hide{display:none!important}.subject-title{font-weight:700}.muted{color:#61748a;font-size:13px}@media(max-width:980px){.grid{grid-template-columns:1fr}.sheet{padding:18px;width:100%}}@media print{@page{size:A4;margin:10mm}body{background:white}.top,.tabs,.controls,.intro,.previewtitle{display:none!important}main{margin:0;padding:0;max-width:none}.grid{display:block}.panel.preview{padding:0;border:0;margin:0}.sheet{padding:0;width:auto;min-height:0;box-shadow:none}.schoolhead,.banner,.subject h3,.section strong{break-after:avoid}.subject{break-inside:auto}.section img{break-inside:avoid}}
+</style><style>@media print{.schoolhead p{margin:1px;font-size:10px}.section{font-size:10.5px;line-height:1.25;margin-bottom:4px}.section img{max-height:100mm}.subject{margin-bottom:8px}.banner{padding:4px;margin:7px 0}.foot{font-size:8px}}.institution-head{display:grid;grid-template-columns:1fr 1fr;gap:12px}.selection-board{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:12px 0}.choice-grid{display:grid;gap:8px;margin:12px 0}.choice-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}.choice-grid label{display:flex;align-items:center;gap:6px;border:1px solid #cad8e6;border-radius:7px;padding:8px 6px;margin:0;font-size:13px;cursor:pointer;white-space:nowrap}.choice-grid input{width:auto;margin:0}.action-line{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.table-wrap{overflow-x:auto}.compact-table{border-collapse:collapse;width:100%;font-size:13px}.compact-table th,.compact-table td{border-bottom:1px solid #dce5ee;text-align:left;padding:9px 7px}.compact-table th{background:#edf3f9}.compact-table input{width:auto}.compact-table button{padding:5px 9px}.compact-table .muted{font-size:12px}@media(max-width:700px){.selection-board,.institution-head{grid-template-columns:1fr}.choice-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}}.choice-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}#teacherSubjects{max-height:180px;overflow:auto}#teacherSubjects.choice-grid.four{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:650px){#teacherSubjects.choice-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}}.coordinator-left{margin-top:18px;padding-top:7px}.coordinator-left>label{display:flex;align-items:center;gap:8px}#coordinatorYearChecks.choice-grid.four{grid-template-columns:repeat(2,minmax(0,1fr))}</style><style>
+.schoolhead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:10px;align-items:center;text-align:left;border:0;padding:0;margin-bottom:5px}
+.schoolbrand{display:flex;align-items:center;gap:8px;min-width:0}.schoolbrand img{max-width:65px;max-height:65px;object-fit:contain}.schoolbrand .brandtext{min-width:0}.schoolbrand h2{font-size:14px;line-height:1.2;margin:0}.schoolbrand strong{display:block;font-size:21px;letter-spacing:.4px}.schoolbrand small{font-size:10px}
+.headtable{width:100%;border-collapse:collapse;font-size:10px;table-layout:auto}.headtable th,.headtable td{border:1px solid #333;padding:3px 5px;text-align:left;vertical-align:middle}.headtable th{font-weight:700;white-space:nowrap}.headtable td{min-width:28px}
+.noticePreview{border:1px solid #555;padding:7px 9px;font-size:11px;line-height:1.32;margin:7px 0;overflow-wrap:anywhere}.noticePreview strong{display:block;margin-bottom:4px}.noticePreview p{margin:4px 0}.noticePreview img{max-width:100%;max-height:90mm;object-fit:contain}
+.banner{font-size:9px;padding:5px;margin:5px 0 9px}.subject h3{font-size:11px}
+@media print{.schoolhead{grid-template-columns:1fr 1.18fr;gap:8px}.headtable{font-size:9px}.schoolbrand h2{font-size:12px}.schoolbrand strong{font-size:18px}.banner{font-size:8px}.noticePreview{font-size:10px}.noticePreview img{break-inside:avoid}}
+@media(max-width:600px){.schoolhead{grid-template-columns:1fr}.headtable{font-size:9px}}
+</style><style>
+.multi-classes{display:flex;flex-wrap:wrap;gap:7px;padding:5px 0}.class-pill{display:inline-flex;align-items:center;gap:7px;margin:0;border:1px solid #b9c9d9;border-radius:8px;padding:9px 11px;background:#f7fbff;cursor:pointer;min-height:42px}.class-pill input{width:18px;height:18px;margin:0}.class-pill:has(input:checked){background:#dcecff;border-color:#185b9e}
+@media(max-width:760px){main{padding:0 10px}.grid{grid-template-columns:1fr!important}.institution-head{grid-template-columns:1fr!important}.row{flex-wrap:wrap}.row>*{flex-basis:100%}.selection-board{grid-template-columns:1fr!important}.action-line{flex-wrap:wrap}.action-line>*{max-width:100%!important}.choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.table-wrap{overflow-x:auto;max-width:100%}.compact-table{min-width:540px}.panel{padding:12px}.toolbar{display:flex;flex-wrap:wrap;gap:4px}.editor{min-height:115px}.sheet{width:100%;padding:10px;box-shadow:none}.schoolhead{grid-template-columns:1fr}.headtable{font-size:10px}}
+@media print{.multi-classes{display:none!important}.schoolhead{grid-template-columns:1fr 1.18fr!important}}
+</style><style>
+/* Turmas compactas: largura fixa, apenas a letra, seleção múltipla. */
+.multi-classes{display:grid!important;grid-template-columns:repeat(4,30px);gap:5px!important;justify-content:start;padding:3px 0 5px!important}
+.class-mini{width:30px;height:30px;min-height:30px;padding:0!important;border:1px solid #b9c9d9;border-radius:5px;background:#fff;color:#254260;font-size:12px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.class-mini[aria-pressed="true"]{background:#185b9e;color:#fff;border-color:#185b9e}
+.class-mini:focus-visible{outline:2px solid #327bc3;outline-offset:2px}
+.preview-choice{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:11px;color:#52667b}
+.preview-cycle{font-size:11px!important;width:30px;height:27px;min-height:27px;padding:0!important;border-radius:5px!important}
+.preview-cycle:disabled{opacity:.7;cursor:default}
+@media(max-width:760px){.multi-classes{grid-template-columns:repeat(4,30px)}.class-mini{width:30px;height:30px}.preview-choice{margin-bottom:4px}}
+@media print{.preview-choice{display:none!important}}
+.review-workspace{border:1px solid #b7cce0;border-radius:9px;background:#f5f9fe;padding:12px;margin:10px 0}.review-workspace .editor{background:white}.review-workspace textarea{width:100%;box-sizing:border-box}.review-workspace details{padding:7px;border-bottom:1px solid #d7e2ef}.history-content{background:white;padding:7px;margin:5px 0;border:1px solid #d9e3ee;overflow-wrap:anywhere}@media print{#reviewWorkspace,#coordDashboard{display:none!important}}</style><style id="history08css">#history08{display:none}#history08.active{display:block}.hist08-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.hist08-controls label{font-size:12px;display:grid;gap:4px}.hist08-controls input,.hist08-controls select{min-height:32px;max-width:155px}.hist08-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}.hist08-table td,.hist08-table th{border-bottom:1px solid #dbe5ee;padding:8px;text-align:left}.hist08-action{font-size:12px;padding:5px 8px;min-height:30px}@media print{#history08,#tabHistory08{display:none!important}}</style><style id="professor-focus-styles">
+/* Camada experimental: não modifica a lógica da versão-base 0.8.1. */
+:root{--prof-accent:#6842a8}body{background:#f5f2fb;color:#29223a}.top{background:#643ca5}.tabs{margin-bottom:14px}.tabs .admin-tab{display:none!important}.intro h1{color:#60399f}.prof-welcome{padding:12px 15px;background:#fff;border-left:4px solid #6842a8;border-radius:9px;margin-top:12px;font-weight:650}.prof-welcome small{display:block;color:#645c70;font-weight:400;margin-top:4px}.controls .panel{border-radius:15px}.controls h2{color:#60399f}.class-mini{min-width:37px;min-height:37px;border-radius:6px!important;border:1px solid #b6cbe0!important;background:#fff!important;color:#235c9f!important;padding:7px 10px!important}.class-mini[aria-pressed="true"]{background:#235c9f!important;color:#fff!important;border-color:#235c9f!important}.multi-classes{gap:6px}.row{align-items:start}.controls .panel{box-shadow:0 5px 20px #3421540c}@media(max-width:760px){.grid#work{grid-template-columns:1fr!important}.controls .panel{padding:15px}.row{gap:8px}.class-mini{min-height:43px;min-width:43px}.prof-welcome{font-size:14px}}
+</style><style>.professor-hidden{display:none!important}</style><style>
+/* Ajuste solicitado: saudação no cabeçalho, aproveitamento da largura da tela. */
+header.top{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:13px max(20px,calc((100vw - 1440px)/2))}
+header.top .prof-welcome{margin:0;flex:0 1 490px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);border-left:4px solid #d8c5ff;color:#fff;padding:10px 15px}
+header.top .prof-welcome small{color:#e4dff2}
+main{max-width:1440px;width:100%;margin:18px auto;padding:0 20px}
+.grid#work{display:block}
+.grid#work>.controls{display:grid;grid-template-columns:minmax(280px,0.85fr) minmax(420px,1.5fr);gap:18px;align-items:start}
+.grid#work>.controls>.panel{margin:0;min-width:0}
+.grid#work>.controls>.panel:nth-child(n+3):not(.professor-hidden){grid-column:1/-1}
+.grid#work>.controls>.panel.professor-hidden{display:none!important}
+@media(max-width:900px){.grid#work>.controls{grid-template-columns:1fr}.grid#work>.controls>.panel:nth-child(n+3):not(.professor-hidden){grid-column:auto}}
+@media(max-width:650px){header.top{padding:14px 16px;gap:10px}header.top .prof-welcome{flex-basis:100%;font-size:14px}main{padding:0 12px}.grid#work>.controls{gap:12px}}
+</style><style>
+/* v0.8.4 — comunicado abaixo de Minha turma, na coluna esquerda. */
+@media(min-width:901px){
+  .grid#work>.controls{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(420px,1.5fr);grid-template-rows:auto 1fr;align-items:start;gap:12px 18px}
+  .grid#work>.controls>.panel:nth-child(1){grid-column:1;grid-row:1}
+  .grid#work>.controls>.panel:nth-child(2){grid-column:2;grid-row:1 / span 2}
+  .grid#work>.controls>.panel:nth-child(3):not(.professor-hidden){grid-column:1;grid-row:2}
+  .grid#work>.controls>.panel:nth-child(n+4):not(.professor-hidden){grid-column:1/-1;grid-row:auto}
+  .grid#work>.controls>.panel{min-width:0}
+  .grid#work>.controls>.panel:nth-child(3) input,
+  .grid#work>.controls>.panel:nth-child(3) textarea{max-width:100%}
+}
+@media(max-width:900px){
+  .grid#work>.controls{display:flex;flex-direction:column;gap:12px}
+  .grid#work>.controls>.panel{width:100%}
+}
+</style><style>/* v0.8.5: ocultar controle de prévia A4 apenas na visão do professor; manter IDs internos para compatibilidade */ .preview-choice{display:none!important}</style><style>
+#logoutBtn{background:transparent;color:white;border:1px solid #d8e3f6;padding:8px 14px;flex:0 0 auto}
+#cycle-notice{margin:10px 0 14px;padding:12px 15px;background:#fff;border:1px solid #dcd1eb;border-left:4px solid #663da4;border-radius:9px;font-size:14px}
+#cycle-notice strong{color:#50318d}
+</style><style>#intro-clock-row{display:grid;grid-template-columns:minmax(280px,1fr) minmax(370px,1.1fr);align-items:start;gap:18px;margin-bottom:12px}
+#intro-clock-row .intro{margin:0;min-width:0}
+#intro-clock-row #cycle-notice{margin:0;min-width:0;padding:12px 16px}
+.clock-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.clock-head label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600}
+.clock-head select{font:inherit;padding:6px 8px;border:1px solid #c8c0d8;border-radius:7px;background:#fff;color:#28223c}
+.clock-time{font-size:clamp(24px,3vw,34px);font-weight:750;letter-spacing:1px;color:#593499;font-variant-numeric:tabular-nums;line-height:1.2;margin:4px 0}
+.clock-target{font-size:13px;font-weight:600}
+.clock-note{display:block;color:#61596d;font-size:11px;margin-top:5px;line-height:1.35}
+@media(max-width:850px){#intro-clock-row{grid-template-columns:1fr;gap:8px}}
+</style><style>
+/* v0.9.2: contador compacto na mesma faixa visual de Minha Agenda */
+@media(min-width:851px){#intro-clock-row{grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:center}}
+#intro-clock-row #cycle-notice{padding:8px 12px}
+.clock-head{gap:6px}
+.clock-head strong{font-size:12px}
+.clock-head label{font-size:11px}
+.clock-head select{padding:3px 5px;font-size:11px}
+.clock-time{font-size:21px;line-height:1.1;margin:2px 0}
+.clock-target{font-size:11px;line-height:1.3}
+.clock-note{font-size:10px;margin-top:2px}
+@media(max-width:850px){#intro-clock-row{grid-template-columns:1fr}#intro-clock-row #cycle-notice{max-width:100%}}
+</style><style>
+/* v0.9.3: indicador horizontal integrado ao título */
+#intro-clock-row{display:flex!important;justify-content:space-between;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+#intro-clock-row .intro{flex:1 1 320px;margin:0;min-width:0}
+#intro-clock-row #cycle-notice{flex:0 1 auto;min-width:0;max-width:100%;padding:0!important;margin:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;text-align:right}
+.clock-inline{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.clock-icon{color:#62419b;font-size:19px;line-height:1}
+#cycle-notice .clock-time{font-size:17px;font-weight:700;line-height:1.2;letter-spacing:.3px;margin:0;font-variant-numeric:tabular-nums;color:#51416e}
+.clock-turn-label select{font:inherit;font-size:12px;padding:5px 7px;border:1px solid #d8cfe5;border-radius:7px;background:#f1eaf9;color:#49376b}
+#cycle-notice .clock-target{font-size:11px;line-height:1.35;color:#6b6276;margin-top:3px;font-weight:400}
+#cycle-notice.clock-warning .clock-time{color:#9b6600}
+#cycle-notice.clock-expired .clock-time{color:#b13c4a}
+@media(max-width:650px){#intro-clock-row{align-items:flex-start}#intro-clock-row #cycle-notice{text-align:left}.clock-inline{justify-content:flex-start}}
+</style><style>
+/* v0.9.4: relógio discreto no cabeçalho, entre subtítulo e saudação. */
+header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.top>strong{flex:0 0 auto}
+header.top>small{flex:0 1 auto}
+header.top>#cycle-notice{flex:0 0 auto;margin:0!important;padding:4px 8px!important;background:transparent!important;border:0!important;border-radius:7px!important;box-shadow:none!important;max-width:none!important;text-align:left!important}
+header.top #cycle-notice .clock-inline{display:flex;align-items:center;gap:7px;white-space:nowrap}
+header.top #cycle-notice .clock-time{font-size:15px!important;color:#fff!important;font-weight:700}
+header.top #cycle-notice .clock-icon{color:#ddd0ff!important}
+header.top #clock-turn{font-size:12px;padding:5px 7px;background:#f7f4ff;color:#332454;border-radius:7px;max-width:115px}
+header.top .prof-welcome{margin-left:auto;flex:0 1 390px}
+@media(max-width:1120px){header.top>small{display:none}header.top .prof-welcome{flex-basis:310px}}
+@media(max-width:760px){header.top>small{display:block;flex-basis:100%}header.top>#cycle-notice{order:3;flex-basis:auto}header.top .prof-welcome{order:2;flex-basis:100%;margin-left:0}header.top #logoutBtn{order:4;margin-left:auto}}
+</style><style>
+/* v0.9.5: estrutura estável, substitui regras flex anteriores */
+header.top{display:grid!important;grid-template-columns:minmax(220px,1fr) auto minmax(260px,390px) auto!important;align-items:center!important;gap:12px!important;flex-wrap:initial!important;padding:12px 20px!important;min-height:86px!important}
+header.top>strong{grid-column:1!important;grid-row:1!important;min-width:0!important;white-space:normal!important;font-size:20px!important}
+header.top>#cycle-notice{grid-column:2!important;grid-row:1!important;order:initial!important;flex:none!important;margin:0!important;padding:0!important;max-width:none!important;min-width:0!important;white-space:nowrap!important;background:transparent!important;border:0!important;box-shadow:none!important}
+header.top #cycle-notice .clock-inline{display:flex!important;align-items:center!important;gap:7px!important}
+header.top #cycle-notice .clock-time{font-size:15px!important;color:white!important}
+header.top #clock-turn{font-size:12px!important;width:auto!important;max-width:110px!important}
+header.top>.prof-welcome{grid-column:3!important;grid-row:1!important;order:initial!important;flex:none!important;margin:0!important;min-width:0!important;max-width:none!important;padding:10px 13px!important}
+header.top>#logoutBtn{grid-column:4!important;grid-row:1!important;order:initial!important;flex:none!important;margin:0!important;white-space:nowrap!important}
+@media(max-width:1080px){header.top{grid-template-columns:minmax(190px,1fr) auto minmax(200px,310px) auto!important;gap:9px!important}header.top>strong{font-size:17px!important}header.top>.prof-welcome{font-size:13px!important}}
+@media(max-width:790px){header.top{grid-template-columns:minmax(0,1fr) auto!important;gap:9px!important}header.top>strong{grid-column:1!important;grid-row:1!important}header.top>#logoutBtn{grid-column:2!important;grid-row:1!important}header.top>.prof-welcome{grid-column:1/-1!important;grid-row:2!important}header.top>#cycle-notice{grid-column:1/-1!important;grid-row:3!important;justify-self:start!important}header.top{padding:12px 16px!important}}
+</style><style>.public-demo-notice{background:#fff4d6;border-left:4px solid #a87300;color:#533e0c;padding:10px 16px;font-size:13px;font-weight:600}.public-demo-notice strong{font-weight:800}</style><style>
+/* Identidade institucional AnnA One — aplicada sem alterar os módulos da Agenda */
+header.top{background:#0c2646;display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 4.5%;min-height:84px}
+.anna-prof-brand{display:flex;align-items:center;gap:10px;flex:1 1 255px;min-width:0}
+.anna-prof-brand img{width:52px;height:52px;object-fit:contain;flex-shrink:0}
+.anna-prof-brand strong{display:block;font-size:25px;line-height:1.05;letter-spacing:-.7px;color:#fff}
+.anna-prof-brand strong span{color:#198dff}
+.anna-prof-brand small{display:block;color:#dcecff;font-size:10px;font-weight:500;letter-spacing:.3px;margin-top:3px}
+.anna-prof-brand .anna-prof-product{display:block;color:#bdd6f2;font-size:11px;margin-top:4px}
+.anna-site-footer{background:#f5f9ff;border-top:1px solid #dce7f2;text-align:center;padding:20px 12px 24px;color:#14335c;font:12px/1.6 Inter,"Segoe UI",Arial,sans-serif}
+.anna-site-footer small{display:block;color:#63758a;font-size:10px;margin-top:5px}
+@media(max-width:680px){header.top{gap:12px}.anna-prof-brand{flex-basis:100%}.anna-prof-brand img{width:45px;height:45px}.anna-prof-brand strong{font-size:23px}}
+</style><style>html.anna-auth-pending body{visibility:hidden}#logoutBtn{background:#eef6ff;color:#0c3767;border:1px solid #b9d8fa}</style><script>document.documentElement.classList.add('anna-auth-pending');</script></head><body><div class="public-demo-notice" role="note"><strong>PRÉVIA PÚBLICA · VISÃO DO PROFESSOR</strong> — Sem login, sem dados escolares reais e sem gravação no Neon. Informações exibidas são demonstrativas. Não insira dados pessoais ou sensíveis.</div><header class="top"><div class="anna-prof-brand"><img src="../assets/anna-symbol.svg" alt="Símbolo AnnA One"><div><strong>AnnA <span>One</span></strong><small>Tecnologia e Educação Juntas</small><span class="anna-prof-product">Agenda Educacional · Visão do Professor</span><small id="anna-build-version" style="display:block;margin-top:5px;font-size:12px;opacity:1;font-weight:650">Versão 0.10.0 · Neon TESTE · 22/10/2026</small></div></div><div class="cycle-notice" id="cycle-notice"><div class="clock-inline"><span aria-hidden="true" class="clock-icon">◷</span><span aria-label="Tempo até o próximo prazo" class="clock-time" id="clock-countdown">--:--:--</span><label class="clock-turn-label" for="clock-turn"><select aria-label="Turno de referência" id="clock-turn"><option value="morning">Manhã · 09h</option><option value="afternoon">Tarde · 15h</option></select></label></div></div><div class="prof-welcome" id="profWelcome" role="status">Olá, professor!<small id="authenticated-email">Prévia pública · sem login</small></div><button id="logoutBtn" type="button">Sair</button></header><main><div id="intro-clock-row"><div class="intro"><h1>Minha Agenda</h1><p class="muted">Selecione o ano e marque as turmas autorizadas. Preencha sua aula e envie para revisão.</p></div></div><nav class="tabs"><button class="active" id="tabProfessor">Visão do Professor</button><button class="admin-tab" id="tabAdmin">Cadastro institucional (simulação)</button></nav><section class="panel hide" id="admin"><h2>Cadastro institucional — administração</h2><p class="note">Demonstração local: sem autenticação ou permissões reais. Cadastre um ano por vez e selecione várias turmas.</p><div class="institution-head"><div><label>Nome da escola</label><input id="school" value="ESCOLA EXEMPLO"/></div><div><label>Logotipo (PNG/JPG/WebP)</label><input accept="image/png,image/jpeg,image/webp" id="logo" type="file"/></div></div><h3>1 · Instituição e unidades</h3><div class="institution-head"><div><label>Unidade principal (sede)</label><input id="headquartersName" placeholder="Ex.: Unidade Centro"/></div><div><label>Selecionar unidade para configurar</label><select id="adminUnit"></select></div></div><div class="action-line"><input id="newUnitName" placeholder="Nome de outra unidade" style="max-width:300px"/><button class="secondary" id="addUnit" type="button">Adicionar unidade</button><button class="secondary" id="renameUnit" type="button">Renomear unidade selecionada</button></div><p class="hint">Anos, turmas e vínculos são configurados separadamente por unidade. A sede é a unidade principal da instituição; as demais unidades são filiais. O cadastro de anos e turmas pertence à unidade selecionada.</p><div class="table-wrap"><table class="compact-table"><thead><tr><th>Unidade</th><th>Tipo</th><th>Anos cadastrados</th></tr></thead><tbody id="unitSummary"></tbody></table></div><h3>2 · Anos e turmas</h3><div class="selection-board"><div><strong>Ano (selecione um)</strong><div class="choice-grid four" id="gradeChecks"></div></div><div><strong>Turmas (selecione várias)</strong><div class="choice-grid four" id="classChips"></div></div></div><div class="action-line"><button id="addClass" type="button">Incluir ano e turmas</button><button class="secondary" id="removeGrade" type="button">Excluir ano cadastrado</button></div><div class="table-wrap"><table class="compact-table"><thead><tr><th>Ano cadastrado</th><th>Turmas</th><th>Ações</th></tr></thead><tbody id="gradeSummary"></tbody></table></div><h3>3 · Cadastro de professores</h3><p class="hint">Cadastre o professor uma única vez. E-mail é apenas cadastral nesta versão. Marque uma ou mais disciplinas que ele leciona.</p><div class="institution-head"><div><label>Nome do professor</label><input id="teacherName" placeholder="Nome completo"/><label>E-mail</label><input id="teacherEmail" placeholder="professor@escola.com.br" type="email"/><div class="coordinator-left"><label><input id="isCoordinator" style="width:auto" type="checkbox"/> Também é coordenador de ano</label><div class="hide" id="coordinatorYears"><label>Anos que coordena nesta unidade</label><div class="choice-grid four" id="coordinatorYearChecks"></div><p class="hint">A coordenação é vinculada à unidade selecionada e independe das disciplinas lecionadas.</p></div></div></div><div><label>Disciplinas do professor</label><div class="choice-grid four" id="teacherSubjects"></div><div class="action-line"><input id="newSubject" placeholder="Nova disciplina" style="max-width:260px"/><button class="secondary" id="addSubject" type="button">Adicionar disciplina</button></div><div class="action-line"><select aria-label="Disciplina para excluir" id="removeSubjectSelect" style="max-width:260px"></select><button class="secondary" id="removeSubject" type="button">Excluir disciplina</button></div><p class="hint">A exclusão é permitida apenas para disciplinas sem vínculos com professores ou turmas.</p></div></div><div class="action-line"><button id="saveTeacher" type="button">Cadastrar professor</button><button class="secondary" id="cancelTeacher" type="button">Cancelar edição</button></div><div class="table-wrap"><table class="compact-table"><thead><tr><th>Professor</th><th>E-mail</th><th>Disciplinas</th><th>Coordenação</th><th>Ações</th></tr></thead><tbody id="teacherList"></tbody></table></div><h3>4 · Vincular professor e disciplina</h3><p class="hint">Selecione o ano e as turmas no quadro acima, depois o professor e sua disciplina. A lista abaixo mostra <strong>somente os vínculos do ano selecionado</strong>.</p><div class="institution-head"><div><label>Professor cadastrado</label><select id="assignTeacher"></select></div><div><label>Disciplina deste professor</label><select id="assignSubject"></select></div></div><div class="action-line"><button id="addAssignment" type="button">Vincular às turmas marcadas</button><button class="secondary" id="unlinkSelected" type="button">Desvincular selecionados</button></div><div class="table-wrap"><table class="compact-table"><thead><tr><th><input aria-label="Selecionar vínculos visíveis" id="selectAllLinks" type="checkbox"/></th><th>Turma</th><th>Disciplina</th><th>Professor</th></tr></thead><tbody id="assignmentList"></tbody></table></div><div class="action-line"><button id="saveSchool">Salvar cadastro institucional</button></div><p class="hint">A configuração é armazenada somente neste navegador. Não há login real nesta versão.</p></section><details id="neonPilotPanel" style="margin:10px 0;padding:12px;border:1px solid #cad9e8;border-radius:10px;background:#f8fbff"><summary style="cursor:pointer;font-weight:700">Vínculos do professor no Neon · teste de integração</summary><p id="neonPilotStatus" role="status" style="font-size:13px">Aguardando sessão autenticada.</p><div id="neonPilotResults" style="font-size:13px"></div><p style="font-size:12px;color:#52667c">Consulta somente de leitura, separada do formulário atual. As turmas do formulário continuam no modo de demonstração até a validação da sessão e das permissões.</p><button id="neonPilotRetry" type="button" class="secondary">Consultar novamente</button></details><section id="neonFormContext" hidden aria-live="polite" style="padding:12px;margin:10px 0;border:1px solid #b6d7c5;border-radius:10px;background:#f5fbf7"><strong>Contexto autenticado do Professor · Neon</strong><p id="neonFormContextText" style="margin:7px 0"></p><small>Identificação de escola, unidade, turma e disciplina confirmada pelo Neon. Os controles de lançamento abaixo ainda usam os cadastros locais; nenhum vínculo é gravado automaticamente.</small></section><div class="grid" id="work"><section class="controls"><div class="panel"><h2>Minha turma</h2><div id="neonWorkFields" hidden style="padding:10px;margin:8px 0;border:1px solid #b6d7c5;border-radius:8px;background:#f5fbf7"><strong>Dados escolares autenticados · Neon</strong><label for="neonWorkAssignment">Turma e disciplina</label><select id="neonWorkAssignment" style="width:100%;margin:8px 0"></select><p id="neonWorkDetail" style="font-size:13px;margin:6px 0"></p><details id="neonDraftPanel" style="margin:10px 0"><summary style="cursor:pointer;font-weight:600">Preparar lançamento para esta turma (rascunho separado)</summary><label for="neonDraftDate">Data da aula</label><input id="neonDraftDate" type="date" style="width:100%"><div id="neonDraftFormatting" style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0"><span style="font-size:12px;align-self:center">Formatação do rascunho:</span><button type="button" class="secondary" data-draft-format="bold">Negrito</button><button type="button" class="secondary" data-draft-format="italic">Itálico</button><button type="button" class="secondary" data-draft-format="underline">Sublinhado</button><button type="button" class="secondary" data-draft-format="list">Lista</button></div><small id="neonDraftFormatHelp">Selecione primeiro o texto no campo desejado e depois clique em Negrito, Itálico, Sublinhado ou Lista. A formatação aparecerá diretamente no editor.</small><label for="neonDraftContent">Conteúdo trabalhado</label><div id="neonDraftContent" class="editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height:95px"></div><div style="margin:6px 0"><label for="neonDraftImage">Imagem ilustrativa do rascunho (PNG, JPG ou WebP, até 1 MB)</label><input id="neonDraftImage" type="file" accept="image/png,image/jpeg,image/webp"><button id="neonDraftRemoveImage" class="secondary" type="button">Remover imagem</button><p id="neonDraftImageStatus" style="font-size:12px"></p></div><label for="neonDraftClassActivity">Atividade em classe</label><div id="neonDraftClassActivity" class="editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height:95px"></div><label for="neonDraftHomeActivity">Atividade para casa</label><div id="neonDraftHomeActivity" class="editor" contenteditable="true" role="textbox" aria-multiline="true" style="min-height:95px"></div><p style="font-size:12px;color:#52667c">Dica: use os campos acima para rascunhar. A prévia autenticada continua isolada do editor de demonstração.</p><button id="neonDraftSave" type="button" class="secondary">Guardar rascunho nesta sessão</button><div style="margin:8px 0"><button id="neonLoadTest" type="button" class="secondary">Consultar rascunhos do Neon (TESTE)</button><select id="neonSavedDrafts" aria-label="Rascunhos salvos no Neon" style="width:100%;margin:5px 0"><option value="">Consulte para listar rascunhos</option></select><button id="neonOpenTest" type="button" class="secondary">Abrir rascunho selecionado</button><button id="neonNewTest" type="button" class="secondary">Novo rascunho</button><button id="neonSubmitTest" type="button" class="secondary">Enviar rascunho à Coordenação (TESTE)</button><small id="neonLoadResult" role="status"></small></div><button id="neonSaveTest" type="button" class="secondary">Salvar rascunho no Neon (TESTE)</button><small id="neonSaveTestResult" role="status">Somente dados fictícios. Salva um novo registro na tabela de testes.</small><button id="neonTestAccess" type="button" class="secondary">Testar acesso Neon (somente leitura)</button><small id="neonTestAccessResult" role="status">Teste isolado: não grava nem modifica lançamentos.</small><button id="neonDraftPreviewButton" type="button" class="secondary">Visualizar rascunho autenticado</button><p id="neonDraftStatus" role="status" style="font-size:12px"></p><section id="neonDraftPreview" hidden style="white-space:pre-wrap;padding:12px;margin:10px 0;border:1px solid #cbd5e1;border-radius:8px;background:white" aria-label="Prévia do rascunho autenticado"></section><small>Rascunho temporário deste navegador, separado dos registros de demonstração. Não envia informações ao Neon e não altera a prévia A4.</small></details><small>Identificação oficial somente para consulta. O lançamento e a prévia abaixo permanecem no modo local de demonstração, sem gravar dados do Neon.</small></div><label>Escola</label><input disabled="" id="schoolRead"/><label>Unidade</label><select id="workUnit"></select><div class="row"><div><label>Ano</label><select id="grade"></select></div><div><label>Turmas</label><div aria-label="Turmas para lançamento, seleção múltipla" class="multi-classes" id="workClasses" role="group"></div><div class="preview-choice"><span>Prévia A4:</span> <button class="secondary preview-cycle" id="nextPreviewClass" title="Alternar turma da prévia" type="button">A</button></div><select aria-label="Turma da prévia A4" class="hide" id="classroom" tabindex="-1"></select></div></div><label>Data</label><input id="day" lang="pt-BR" type="date"/><p class="hint">Formato de exibição: DD/MM/AAAA. Nome e logotipo são definidos no cadastro institucional. Os combos são filtrados pelo vínculo do professor selecionado.</p></div><div class="panel"><h2>Registro da aula</h2><label>Professor (perfil de demonstração)</label><select id="teacher"></select><label>Disciplina vinculada</label><select id="subject"></select><p class="hint">Quando há uma única disciplina no vínculo, a seleção fica fixa. Com várias disciplinas, aparecem apenas as autorizadas.</p><h3>Conteúdo trabalhado em sala</h3><div class="toolbar"><button class="secondary" data-command="bold" data-target="classContent" type="button">Negrito</button><button class="secondary" data-command="insertUnorderedList" data-target="classContent" type="button">Lista</button></div><div aria-label="Conteúdo trabalhado em sala" class="editor" contenteditable="true" id="classContent"></div><h3>Atividade realizada em classe</h3><div class="toolbar"><button class="secondary" data-command="bold" data-target="classActivity" type="button">Negrito</button><button class="secondary" data-command="insertUnorderedList" data-target="classActivity" type="button">Lista</button></div><div aria-label="Atividade realizada em classe" class="editor" contenteditable="true" id="classActivity"></div><h3>Atividade para casa (opcional)</h3><div class="toolbar"><button class="secondary" data-command="bold" data-target="homeActivity" type="button">Negrito</button><button class="secondary" data-command="insertUnorderedList" data-target="homeActivity" type="button">Lista</button></div><div aria-label="Atividade para casa" class="editor" contenteditable="true" id="homeActivity"></div><label>Inserir imagem no campo selecionado</label><select id="imageTarget"><option value="classContent">Conteúdo trabalhado</option><option value="classActivity">Atividade de classe</option><option value="homeActivity">Atividade para casa</option></select><input accept="image/png,image/jpeg,image/webp" id="image" type="file"/><p class="hint">Imagens também podem ser coladas com Ctrl+V dentro dos campos. Limite de 2 MB por arquivo.</p><button id="add">Salvar atividade para revisão</button><button class="secondary" id="clear">Limpar campos</button></div><div class="panel"><h2>Comunicado da agenda / Notice / Comunicado</h2><p class="hint">Comunicado institucional independente das disciplinas. Será impresso antes das atividades da turma, após aprovação simulada.</p><label>Texto do comunicado (pode conter os três idiomas)</label><div aria-label="Comunicado institucional" class="editor" contenteditable="true" id="noticeEditor"></div><label>Imagem do comunicado (opcional)</label><input accept="image/png,image/jpeg,image/webp" id="noticeImage" type="file"/><div class="row"><button id="saveNotice" type="button">Salvar comunicado para revisão</button><button class="secondary" id="approveNotice" type="button">Aprovar comunicado</button></div><p class="hint" id="noticeStatus"></p><button class="secondary" id="removeNotice" type="button">Excluir comunicado da data/turma</button></div><div class="panel professor-hidden"><h2>3 · Revisão editorial</h2><p class="hint">Painel demonstrativo do revisor: edição direta, liberação e histórico local. Os perfis ainda não possuem autenticação real.</p><div id="queue"></div><button class="secondary" id="reset">Restaurar exemplos</button></div><div class="panel professor-hidden"><h2>4 · Acompanhamento da coordenação (somente leitura)</h2><p class="hint">Visualize o andamento das atividades por ano, turma e data, sem aprovar ou reprovar.</p><div id="coordDashboard"></div></div><div class="panel professor-hidden"><h2>5 · Impressão e segurança dos dados</h2><p class="hint">A impressão inclui somente atividades aprovadas para a data e turma selecionadas. Salve PDF pelo navegador.</p><button id="print">Imprimir / Salvar PDF</button><button class="secondary" id="export">Exportar JSON</button><label>Importar JSON</label><input accept=".json,application/json" id="import" type="file"/><p class="note">Dados guardados apenas neste navegador. Não utilize informações pessoais reais de alunos. Sem sincronização, backup automático ou autenticação.</p></div></section><section class="panel preview professor-hidden"><div class="previewtitle"><h2>Prévia da agenda A4</h2><p class="hint">Exibe apenas atividades aprovadas, filtradas pela data, ano e turma.</p></div><article class="sheet"><div class="schoolhead"><div class="schoolbrand"><img alt="Logotipo da instituição" class="hide" id="logoPreview"/><div class="brandtext"><h2 id="schoolPreview"></h2><strong>AGENDA</strong><small id="unitPreview"></small></div></div><table class="headtable"><tbody><tr><th>Ano / Year / Año:</th><td id="gradePreview"></td><th>Turma / Class / Clase:</th><td id="classPreview"></td></tr><tr><th>Data:</th><td colspan="3" id="datePreview"></td></tr><tr><th>Date:</th><td colspan="3" id="dateEnglish"></td></tr><tr><th>Fecha:</th><td colspan="3" id="dateSpanish"></td></tr></tbody></table></div><div class="noticePreview hide" id="noticePreview"></div><div class="banner">ANTES DE EXECUTAR SUAS TAREFAS, REVISE A PARTE TEÓRICA / BEFORE DOING YOUR TASKS, REVIEW THE THEORY / ANTES DE REALIZAR TUS TAREAS, REPASA LA TEORÍA</div><div id="contentPreview"></div><footer class="foot">Documento gerado automaticamente pela AnnA One — Agenda Educacional · Prova Editorial 0.7</footer></article></section></div></main><script>
+function formatDateBR(value){const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value||""));return match?`${match[3]}/${match[2]}/${match[1]}`:(value||"—");}
+
+const $=id=>document.getElementById(id),KEY='anna-editorial-prova-v062',fields=['classContent','classActivity','homeActivity'];
+let teachers=[{id:'maker',name:'Professor(a) Maker',links:[{grade:'6º ano',classes:['A','B'],subject:'Maker'},{grade:'7º ano',classes:['A'],subject:'Maker'},{grade:'8º ano',classes:['A'],subject:'Robótica'}]},{id:'linguas',name:'Professor(a) de Línguas',links:[{grade:'6º ano',classes:['A','B'],subject:'Inglês'},{grade:'8º ano',classes:['A'],subject:'Inglês'}]},{id:'mat',name:'Professor(a) de Matemática',links:[{grade:'8º ano',classes:['A'],subject:'Álgebra'},{grade:'8º ano',classes:['A'],subject:'Geometria'}]}];
+const allGrades=['1º ano','2º ano','3º ano','4º ano','5º ano','6º ano','7º ano','8º ano','9º ano'];const subjectCatalog=['Álgebra','Arte','Ciências','Educação Física','Geografia','Geometria','História','Inglês','Língua Portuguesa','Maker','Matemática','Robótica'];let school={name:'ESCOLA EXEMPLO',logo:'',grades:['5º ano','6º ano','7º ano','8º ano'],classes:{'5º ano':['A','B'],'6º ano':['A','B','C'],'7º ano':['A','B'],'8º ano':['A','B']}},entries=[],editing=null,editingTeacher=null;
+let activeUnit='sede';let notices=[];
+function initUnits(){if(!Array.isArray(school.units)||!school.units.length){school.units=[{id:'sede',name:'Sede',head:true,grades:[...(school.grades||[])],classes:structuredClone(school.classes||{}),assignments:structuredClone(school.assignments||[])}]}if(!school.units.some(u=>u.id===activeUnit))activeUnit=school.units[0].id;loadUnit(activeUnit)}
+function loadUnit(id){const u=school.units.find(x=>x.id===id);if(!u)return;activeUnit=id;school.grades=u.grades||[];school.classes=u.classes||{};school.assignments=u.assignments||[];syncLinks()}
+function persistUnit(){const u=school.units?.find(x=>x.id===activeUnit);if(u){u.grades=[...school.grades];u.classes=structuredClone(school.classes);u.assignments=structuredClone(school.assignments||[])}}
+function switchUnit(id){persistUnit();loadUnit(id);adminGrade=school.grades[0]||'2º ano';chosenClasses=new Set(school.classes[adminGrade]||[]);refreshUnitOptions();updateAdmin();updateSelectors();save()}
+function refreshUnitOptions(){for(const id of ['adminUnit','workUnit']){const old=$(id).value;options(id,school.units.map(u=>u.id),activeUnit);for(const o of $(id).options)o.textContent=school.units.find(u=>u.id===o.value)?.name+(school.units.find(u=>u.id===o.value)?.head?' (sede)':'');$(id).value=activeUnit}const root=$('unitSummary');root.replaceChildren();for(const u of school.units){const tr=document.createElement('tr');for(const value of [u.name,u.head?'Sede':'Unidade',String((u.grades||[]).length)]){const td=document.createElement('td');td.textContent=value;tr.append(td)}root.append(tr)}$('headquartersName').value=school.units.find(u=>u.head)?.name||''}
+function coordinatorYearsFor(t){return t.coordination?.[activeUnit]||[]}
+function renderCoordinatorChecks(selected=[]){const root=$('coordinatorYearChecks');root.replaceChildren();for(const g of configuredYears){const lab=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.value=g;cb.checked=selected.includes(g);lab.append(cb,document.createTextNode(g));root.append(lab)}}
+function setCoordinatorVisibility(){$('coordinatorYears').classList.toggle('hide',!$('isCoordinator').checked)}
+const demo=[{id:1,teacher:'maker',grade:'8º ano',classroom:'A',day:'2026-09-03',subject:'Robótica',classContent:'<p>Introdução aos circuitos e sensores.</p>',classActivity:'<p>Montagem de um circuito simples.</p>',homeActivity:'<p>Desenhar o circuito no caderno e identificar os componentes.</p>',status:'aprovado'},{id:2,teacher:'linguas',grade:'8º ano',classroom:'A',day:'2026-09-03',subject:'Inglês',classContent:'<p>Unit 8 — Buying and Selling.</p>',classActivity:'<p>Exercícios da página 101.</p>',homeActivity:'<p>Write the name of the TV programme. Recorte e cole a atividade no caderno.</p>',status:'aprovado'}];
+function clean(html){const d=document.createElement('div');d.innerHTML=html;d.querySelectorAll('script,style,iframe,object,embed,form,button,input,textarea,svg,link,meta').forEach(x=>x.remove());d.querySelectorAll('*').forEach(el=>{for(const a of [...el.attributes]){if(a.name.startsWith('on')||a.name==='style'||a.name==='href'||(a.name==='src'&&!/^data:image\/(png|jpeg|webp);base64,/i.test(a.value)))el.removeAttribute(a.name)}});return d.innerHTML}
+function options(id,vals,previous){$(id).replaceChildren();vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;$(id).append(o)});if(vals.includes(previous))$(id).value=previous}
+function currentTeacher(){return teachers.find(t=>t.id===$('teacher').value)||{links:[]}}
+function linkedGrades(){return [...new Set(currentTeacher().links.map(l=>l.grade))].filter(g=>school.grades.includes(g))}
+function updateSelectors(){const previous=[...document.querySelectorAll('#workClasses button[aria-pressed="true"]')].map(b=>b.dataset.classroom);const g=$('grade').value,c=$('classroom').value,sub=$('subject').value;options('grade',linkedGrades(),g);const links=currentTeacher().links.filter(l=>l.grade===$('grade').value);const cls=[...new Set(links.flatMap(l=>l.classes))].filter(x=>(school.classes[$('grade').value]||[]).includes(x)).sort((a,b)=>a.localeCompare(b,'pt-BR',{numeric:true}));options('classroom',cls,c);const root=$('workClasses');root.replaceChildren();const selection=previous.filter(x=>cls.includes(x));if(!selection.length&&cls.length)selection.push($('classroom').value||cls[0]);for(const name of cls){const b=document.createElement('button');b.type='button';b.className='class-mini';b.dataset.classroom=name;b.textContent=name;b.setAttribute('aria-label','Turma '+name);b.setAttribute('aria-pressed',String(selection.includes(name)));b.onclick=()=>{const now=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!now));const selected=selectedWorkClasses();if(selected.length&&!selected.includes($('classroom').value))$('classroom').value=selected[0];updateSubjectsForClasses();syncPreviewButton();render();save()};root.append(b)}updateSubjectsForClasses(sub);syncPreviewButton();render()}
+function syncPreviewButton(){const selected=selectedWorkClasses();if(selected.length&&!selected.includes($('classroom').value))$('classroom').value=selected[0];$('nextPreviewClass').textContent=$('classroom').value||'—';$('nextPreviewClass').disabled=selected.length<2;$('nextPreviewClass').title=selected.length>1?'Alternar entre as turmas selecionadas':'Prévia da turma selecionada'}
+function selectedWorkClasses(){return [...document.querySelectorAll('#workClasses button[aria-pressed="true"]')].map(e=>e.dataset.classroom)}
+function updateSubjectsForClasses(preferred){const links=currentTeacher().links.filter(l=>l.grade===$('grade').value);const selected=selectedWorkClasses();const subjects=[...new Set(links.filter(l=>selected.length&&selected.every(c=>l.classes.includes(c))).map(l=>l.subject))];options('subject',subjects,preferred||$('subject').value);$('subject').disabled=subjects.length<=1}
+function save(){persistUnit();try{localStorage.setItem(KEY,JSON.stringify({school,activeUnit,teachers,subjectCatalog,entries,notices,day:$('day').value,teacher:$('teacher').value,grade:$('grade').value,classroom:$('classroom').value}))}catch{alert('Armazenamento local cheio. Exporte o JSON e reduza as imagens.')}}
+const subjectNames={'Português':['Portuguese','Portugués'],'Língua Portuguesa':['Portuguese','Portugués'],'Inglês':['English','Inglés'],'Matemática':['Mathematics','Matemáticas'],'História':['History','Historia'],'Geografia':['Geography','Geografía'],'Ciências':['Science','Ciencias'],'Arte':['Art','Arte'],'Educação Física':['Physical Education','Educación Física'],'Álgebra':['Algebra','Álgebra'],'Geometria':['Geometry','Geometría'],'Maker':['Maker','Maker'],'Robótica':['Robotics','Robótica']};
+function subjectTrilingual(name){const tr=subjectNames[name];return tr?[name,...tr].join(' / '):name+' / '+name+' / '+name}
+function noticeKey(){return {unitId:activeUnit,grade:$('grade').value,classroom:$('classroom').value,day:$('day').value}}
+function noticeIndex(){const k=noticeKey();return notices.findIndex(n=>Object.keys(k).every(x=>n[x]===k[x]))}
+function render(){ $('unitPreview').textContent=school.units?.find(u=>u.id===activeUnit)?.name||'Sede'; $('schoolRead').value=school.name;$('schoolPreview').textContent=school.name;$('gradePreview').textContent=$('grade').value;$('classPreview').textContent=$('classroom').value;$('datePreview').textContent=$('day').value?new Date($('day').value+'T12:00:00').toLocaleDateString('pt-BR'):'';$('logoPreview').classList.toggle('hide',!school.logo);if(school.logo)$('logoPreview').src=school.logo;
+const dt=$('day').value?new Date($('day').value+'T12:00:00'):null;$('dateEnglish').textContent=dt?dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'';$('dateSpanish').textContent=dt?dt.toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'}):'';
+const notice=notices.find(n=>n.unitId===activeUnit&&n.grade===$('grade').value&&n.classroom===$('classroom').value&&n.day===$('day').value);
+$('noticePreview').classList.toggle('hide',!notice||notice.status!=='aprovado');$('noticePreview').innerHTML=notice?.status==='aprovado'?'<strong>COMUNICADO / NOTICE / COMUNICADO</strong>'+clean(notice.html):'';
+$('noticeStatus').textContent=notice?'Comunicado: '+(notice.status==='aprovado'?'aprovado para impressão':'aguardando revisão'):'Nenhum comunicado para esta data e turma.';
+if(document.activeElement!==$('noticeEditor'))$('noticeEditor').innerHTML=notice?clean(notice.html):'';
+$('contentPreview').replaceChildren();const approved=entries.filter(a=>(a.unitId||'sede')===activeUnit&&a.status==='aprovado'&&a.grade===$('grade').value&&a.classroom===$('classroom').value&&a.day===$('day').value);for(const a of approved){const sec=document.createElement('section');sec.className='subject';const title=document.createElement('h3');title.textContent=subjectTrilingual(a.subject);sec.append(title);for(const [field,label] of [['classContent','Conteúdo trabalhado / Class content / Contenido trabajado'],['classActivity','Atividade de classe / Classwork / Trabajo en clase'],['homeActivity','Tarefa de casa / Homework / Tarea de casa']]){if(!a[field]||!a[field].replace(/<[^>]*>/g,'').trim()&&!/<img\b/i.test(a[field]))continue;const div=document.createElement('div');div.className='section';const strong=document.createElement('strong');strong.textContent=label+':';const content=document.createElement('div');content.innerHTML=clean(a[field]);div.append(strong,content);sec.append(div)}$('contentPreview').append(sec)}if(!approved.length){const p=document.createElement('p');p.className='muted';p.textContent='Nenhuma atividade aprovada para esta data e turma.';$('contentPreview').append(p)}
+renderReviewQueue();renderCoordinatorDashboard();}
+function reviewHistory(a){if(!Array.isArray(a.history))a.history=[];return a.history}
+function reviewStatus(a){return a.status==='aprovado'?'Liberado':a.status==='esclarecimento'?'Aguardando esclarecimento':a.status==='revisao'?'Em revisão':'Enviado'}
+function renderReviewQueue(){const root=$('queue');root.replaceChildren();const visible=entries.filter(a=>(a.unitId||'sede')===activeUnit).sort((a,b)=>String(b.day).localeCompare(String(a.day)));
+for(const a of visible){const box=document.createElement('div');box.className='item';const heading=document.createElement('strong');heading.textContent=`${a.subject} · ${a.grade} ${a.classroom} · ${formatDateBR(a.day)}`;const status=document.createElement('small');status.textContent=`${teachers.find(t=>t.id===a.teacher)?.name||'Professor'} · ${reviewStatus(a)}`;box.append(heading,status);
+const open=document.createElement('button');open.className='secondary';open.textContent='Abrir revisão';open.onclick=()=>openReview(a.id);box.append(open);
+const hist=reviewHistory(a);if(hist.length){const small=document.createElement('small');small.textContent=`${hist.length} registro(s) no histórico`;box.append(small)}root.append(box)}if(!visible.length)root.textContent='Nenhuma atividade cadastrada nesta unidade.'}
+function openReview(id){const a=entries.find(x=>String(x.id)===String(id));if(!a)return;const old=document.getElementById('reviewWorkspace');if(old)old.remove();const panel=document.createElement('div');panel.id='reviewWorkspace';panel.className='review-workspace';const title=document.createElement('h3');title.textContent=`Revisão: ${a.subject} · ${a.grade} ${a.classroom}`;panel.append(title);
+const inputs={};for(const [field,label] of [['classContent','Conteúdo trabalhado em sala'],['classActivity','Atividade realizada em classe'],['homeActivity','Atividade para casa']]){const lab=document.createElement('label');lab.textContent=label;const ed=document.createElement('div');ed.className='editor';ed.contentEditable='true';ed.setAttribute('aria-label','Revisar '+label);ed.innerHTML=clean(a[field]||'');panel.append(lab,ed);inputs[field]=ed}
+const noteLabel=document.createElement('label');noteLabel.textContent='Observação para o professor (opcional)';const note=document.createElement('textarea');note.rows=2;note.placeholder='Ex.: confirmar referência da atividade';panel.append(noteLabel,note);
+const actions=document.createElement('div');actions.className='action-line';function apply(status){const before=Object.fromEntries(fields.map(f=>[f,a[f]||'']));const after=Object.fromEntries(fields.map(f=>[f,clean(inputs[f].innerHTML)]));const changed=fields.some(f=>before[f]!==after[f]);if(status==='aprovado'&&!fields.some(f=>after[f].replace(/<[^>]*>/g,'').trim()||/<img\b/i.test(after[f]))){alert('Não é possível liberar uma atividade vazia.');return}if(status==='esclarecimento'&&!note.value.trim()){alert('Descreva o esclarecimento solicitado ao professor.');return}Object.assign(a,after);a.status=status;const history=reviewHistory(a);history.push({at:new Date().toISOString(),by:'Revisor (perfil simulado)',action:status,changed,original:changed?before:null,corrected:changed?after:null,note:note.value.trim()});save();render();openReview(a.id)}
+for(const [label,status,cls] of [['Salvar correções','revisao','secondary'],['Liberar para impressão','aprovado',''],['Solicitar esclarecimento','esclarecimento','secondary']]){const b=document.createElement('button');b.textContent=label;if(cls)b.className=cls;b.onclick=()=>apply(status);actions.append(b)}const close=document.createElement('button');close.textContent='Fechar';close.className='secondary';close.onclick=()=>panel.remove();actions.append(close);panel.append(actions);
+const historyTitle=document.createElement('h4');historyTitle.textContent='Histórico de revisão';panel.append(historyTitle);const hist=reviewHistory(a);if(!hist.length){const p=document.createElement('p');p.className='hint';p.textContent='Ainda não há revisões registradas.';panel.append(p)}for(const h of [...hist].reverse()){const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent=`${new Date(h.at).toLocaleString('pt-BR')} · ${h.by} · ${h.action}${h.changed?' · texto alterado':''}`;details.append(summary);if(h.note){const p=document.createElement('p');p.textContent='Observação: '+h.note;details.append(p)}if(h.changed){for(const f of fields){if(h.original?.[f]===h.corrected?.[f])continue;const p=document.createElement('p');p.textContent=f+': original e versão corrigida registrados';details.append(p);for(const [name,html] of [['Original',h.original?.[f]],['Corrigido',h.corrected?.[f]]]){const div=document.createElement('div');div.className='history-content';const label=document.createElement('strong');label.textContent=name;const content=document.createElement('div');content.innerHTML=clean(html||'');div.append(label,content);details.append(div)}}}panel.append(details)}$('queue').prepend(panel);panel.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function renderCoordinatorDashboard(){const root=$('coordDashboard');root.replaceChildren();const table=document.createElement('table');table.className='compact-table';const head=document.createElement('thead');head.innerHTML='<tr><th>Data</th><th>Ano / Turma</th><th>Disciplina</th><th>Situação</th></tr>';table.append(head);const body=document.createElement('tbody');for(const a of entries.filter(x=>(x.unitId||'sede')===activeUnit).sort((a,b)=>String(b.day).localeCompare(String(a.day)))){const tr=document.createElement('tr');for(const value of [formatDateBR(a.day),a.grade+' '+a.classroom,a.subject,reviewStatus(a)]){const td=document.createElement('td');td.textContent=value;tr.append(td)}body.append(tr)}table.append(body);const wrap=document.createElement('div');wrap.className='table-wrap';wrap.append(table);root.append(wrap)}
+
+function syncLinks(){for(const t of teachers)t.links=[];for(const a of school.assignments||[]){const t=teachers.find(t=>t.id===a.teacher);if(!t)continue;let link=t.links.find(l=>l.grade===a.grade&&l.subject===a.subject);if(!link){link={grade:a.grade,subject:a.subject,classes:[]};t.links.push(link)}if(!link.classes.includes(a.classroom))link.classes.push(a.classroom)}}
+function ensureAssignments(){if(!Array.isArray(school.assignments)){school.assignments=teachers.flatMap(t=>t.links.flatMap(l=>l.classes.map(c=>({grade:l.grade,classroom:c,subject:l.subject,teacher:t.id}))))}syncLinks()}
+let adminGrade='2º ano',chosenClasses=new Set(['A','B']);
+const configuredYears=['2º ano','3º ano','4º ano','5º ano','6º ano','7º ano','8º ano','9º ano'];
+const classLetters=['A','B','C','D','E','F','G','H'];
+function renderGradeChecks(){const root=$('gradeChecks');root.replaceChildren();for(const g of configuredYears){const lab=document.createElement('label'),radio=document.createElement('input');radio.type='radio';radio.name='admin-year';radio.value=g;radio.checked=adminGrade===g;radio.onchange=()=>{adminGrade=g;chosenClasses=new Set(school.classes[g]||[]);updateAdmin()};lab.append(radio,document.createTextNode(g));root.append(lab)}}
+function renderAdminGrade(){const root=$('classChips');root.replaceChildren();for(const c of classLetters){const lab=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.checked=chosenClasses.has(c);cb.onchange=()=>{if(cb.checked)chosenClasses.add(c);else chosenClasses.delete(c)};lab.append(cb,document.createTextNode(c));root.append(lab)}}
+function renderGradeSummary(){const root=$('gradeSummary');root.replaceChildren();for(const g of configuredYears.filter(g=>school.grades.includes(g))){const tr=document.createElement('tr');const a=document.createElement('td');a.textContent=g;const b=document.createElement('td');b.textContent=(school.classes[g]||[]).join(', ')||'Sem turmas';const c=document.createElement('td');const btn=document.createElement('button');btn.className='secondary';btn.textContent='Editar';btn.onclick=()=>{adminGrade=g;chosenClasses=new Set(school.classes[g]||[]);updateAdmin()};c.append(btn);tr.append(a,b,c);root.append(tr)}if(!root.children.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=3;td.className='muted';td.textContent='Nenhum ano cadastrado ainda.';tr.append(td);root.append(tr)}}
+function renderAssignments(){const root=$('assignmentList');root.replaceChildren();const filtered=(school.assignments||[]).filter(a=>a.grade===adminGrade).slice().sort((a,b)=>a.classroom.localeCompare(b.classroom)||a.subject.localeCompare(b.subject));for(const a of filtered){const tr=document.createElement('tr'),td0=document.createElement('td'),cb=document.createElement('input');cb.type='checkbox';cb.className='link-choice';cb.dataset.link=JSON.stringify(a);td0.append(cb);const cells=[a.classroom,a.subject,teachers.find(t=>t.id===a.teacher)?.name||'(professor excluído)'].map(v=>{const td=document.createElement('td');td.textContent=v;return td});tr.append(td0,...cells);root.append(tr)}if(!filtered.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=4;td.className='muted';td.textContent='Nenhum vínculo para '+adminGrade+'.';tr.append(td);root.append(tr)}$('selectAllLinks').checked=false}
+function renderTeacherSubjects(){const root=$('teacherSubjects'),chosen=new Set([...root.querySelectorAll('input:checked')].map(i=>i.value));root.replaceChildren();for(const sub of subjectCatalog.slice().sort((a,b)=>a.localeCompare(b,'pt-BR'))){const lab=document.createElement('label'),cb=document.createElement('input');cb.type='checkbox';cb.value=sub;cb.checked=chosen.has(sub);lab.append(cb,document.createTextNode(sub));root.append(lab)}options('removeSubjectSelect',subjectCatalog.slice().sort((a,b)=>a.localeCompare(b,'pt-BR')),$('removeSubjectSelect').value)}
+function teacherOptions(){const prev=$('assignTeacher').value;options('assignTeacher',teachers.map(t=>t.id),prev);for(const o of $('assignTeacher').options)o.textContent=teachers.find(t=>t.id===o.value)?.name||o.value;const old=$('teacher').value;options('teacher',teachers.map(t=>t.id),old);for(const o of $('teacher').options)o.textContent=teachers.find(t=>t.id===o.value)?.name||o.value;updateAssignmentSubjects()}
+function updateAssignmentSubjects(){const t=teachers.find(t=>t.id===$('assignTeacher').value),prev=$('assignSubject').value;options('assignSubject',t?.subjects||[],prev)}
+function renderTeacherList(){const root=$('teacherList');root.replaceChildren();for(const t of teachers){const tr=document.createElement('tr');for(const value of [t.name,t.email||'—',(t.subjects||[]).join(', ')||'—',coordinatorYearsFor(t).join(', ')||'—']){const td=document.createElement('td');td.textContent=value;tr.append(td)}const actions=document.createElement('td');const edit=document.createElement('button');edit.className='secondary';edit.textContent='Editar';edit.onclick=()=>{editingTeacher=t.id;$('teacherName').value=t.name;$('teacherEmail').value=t.email||'';renderTeacherSubjects();$('isCoordinator').checked=coordinatorYearsFor(t).length>0;renderCoordinatorChecks(coordinatorYearsFor(t));setCoordinatorVisibility();for(const cb of $('teacherSubjects').querySelectorAll('input'))cb.checked=(t.subjects||[]).includes(cb.value);$('saveTeacher').textContent='Salvar alterações'};const del=document.createElement('button');del.className='secondary';del.textContent='Excluir';del.style.marginLeft='6px';del.onclick=()=>{if(!confirm('Excluir '+t.name+' e todos os vínculos desse professor?'))return;teachers=teachers.filter(x=>x.id!==t.id);school.assignments=school.assignments.filter(a=>a.teacher!==t.id);if(editingTeacher===t.id)clearTeacherForm();syncLinks();teacherOptions();renderTeacherList();renderAssignments();updateSelectors();save()};actions.append(edit,del);tr.append(actions);root.append(tr)}if(!teachers.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=5;td.textContent='Nenhum professor cadastrado.';tr.append(td);root.append(tr)}}
+function clearTeacherForm(){editingTeacher=null;$('isCoordinator').checked=false;renderCoordinatorChecks();setCoordinatorVisibility();$('teacherName').value='';$('teacherEmail').value='';$('teacherSubjects').querySelectorAll('input').forEach(i=>i.checked=false);$('saveTeacher').textContent='Cadastrar professor'}
+function updateAdmin(){$('school').value=school.name;refreshUnitOptions();renderGradeChecks();renderAdminGrade();renderGradeSummary();renderAssignments();renderTeacherList();teacherOptions()}
+$('isCoordinator').onchange=setCoordinatorVisibility;
+$('adminUnit').onchange=e=>switchUnit(e.target.value);
+$('workUnit').onchange=e=>switchUnit(e.target.value);
+$('addUnit').onclick=()=>{const name=$('newUnitName').value.trim();if(!name)return;if(school.units.some(u=>u.name.toLocaleLowerCase('pt-BR')===name.toLocaleLowerCase('pt-BR'))){alert('Unidade já cadastrada.');return}persistUnit();const id='unidade-'+Date.now();school.units.push({id,name,head:false,grades:[],classes:{},assignments:[]});$('newUnitName').value='';switchUnit(id)};
+$('renameUnit').onclick=()=>{const u=school.units.find(u=>u.id===activeUnit);const name=prompt('Nome da unidade:',u.name)?.trim();if(!name)return;if(school.units.some(x=>x.id!==u.id&&x.name.toLowerCase()===name.toLowerCase())){alert('Nome já utilizado.');return}u.name=name;refreshUnitOptions();render();save()};
+$('headquartersName').onchange=e=>{const u=school.units.find(u=>u.head);if(u){u.name=e.target.value.trim()||'Sede';refreshUnitOptions();render();save()}};
+$('addSubject').onclick=()=>{const value=$('newSubject').value.trim();if(!value)return;if(!subjectCatalog.some(s=>s.toLocaleLowerCase('pt-BR')===value.toLocaleLowerCase('pt-BR'))){subjectCatalog.push(value);renderTeacherSubjects()}$('newSubject').value='';save()};
+$('removeSubject').onclick=()=>{const subject=$('removeSubjectSelect').value;if(!subject)return;const usedBy=teachers.filter(t=>(t.subjects||[]).includes(subject));const linked=(school.units||[]).some(u=>(u.assignments||[]).some(a=>a.subject===subject))||(school.assignments||[]).some(a=>a.subject===subject);if(usedBy.length||linked){alert('Não é possível excluir: esta disciplina está vinculada a professores ou turmas. Remova esses vínculos antes.');return}if(!confirm('Excluir a disciplina "'+subject+'" do catálogo?'))return;subjectCatalog=subjectCatalog.filter(s=>s!==subject);renderTeacherSubjects();updateAssignmentSubjects();save()};
+$('saveTeacher').onclick=()=>{const coordinatorYears=$('isCoordinator').checked?[...$('coordinatorYearChecks').querySelectorAll('input:checked')].map(x=>x.value):[];if($('isCoordinator').checked&&!coordinatorYears.length){alert('Marque pelo menos um ano que o professor coordena.');return}const name=$('teacherName').value.trim(),email=$('teacherEmail').value.trim().toLowerCase(),subjects=[...$('teacherSubjects').querySelectorAll('input:checked')].map(x=>x.value);if(!name||!email||!subjects.length){alert('Informe nome, e-mail e ao menos uma disciplina.');return}if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert('Informe um e-mail válido.');return}if(teachers.some(t=>t.email?.toLowerCase()===email&&t.id!==editingTeacher)){alert('Este e-mail já está cadastrado.');return}if(editingTeacher){const t=teachers.find(x=>x.id===editingTeacher);if(!t)return;const removed=(school.assignments||[]).filter(a=>a.teacher===t.id&&!subjects.includes(a.subject));if(removed.length&&!confirm('As disciplinas removidas perderão '+removed.length+' vínculo(s). Continuar?'))return;t.name=name;t.email=email;t.subjects=subjects;t.coordination=t.coordination||{};t.coordination[activeUnit]=coordinatorYears;school.assignments=school.assignments.filter(a=>a.teacher!==t.id||subjects.includes(a.subject))}else{teachers.push({id:'prof-'+Date.now(),name,email,subjects,coordination:{[activeUnit]:coordinatorYears},links:[]})}clearTeacherForm();syncLinks();teacherOptions();renderTeacherList();renderAssignments();updateSelectors();save()};
+$('cancelTeacher').onclick=clearTeacherForm;
+$('assignTeacher').onchange=updateAssignmentSubjects;
+$('addClass').onclick=()=>{if(!chosenClasses.size){alert('Marque pelo menos uma turma.');return}const previous=school.classes[adminGrade]||[];const next=[...chosenClasses].sort();const removed=previous.filter(c=>!chosenClasses.has(c));if(removed.length&&school.assignments.some(a=>a.grade===adminGrade&&removed.includes(a.classroom))&&!confirm('Remover turmas também removerá os vínculos correspondentes. Continuar?'))return;school.grades=[...new Set([...school.grades,adminGrade])].sort((a,b)=>configuredYears.indexOf(a)-configuredYears.indexOf(b));school.classes[adminGrade]=next;school.assignments=school.assignments.filter(a=>!(a.grade===adminGrade&&removed.includes(a.classroom)));syncLinks();updateSelectors();updateAdmin();save()};
+$('removeGrade').onclick=()=>{if(!school.grades.includes(adminGrade))return;if(!confirm('Excluir '+adminGrade+' e todos os vínculos deste ano?'))return;school.grades=school.grades.filter(g=>g!==adminGrade);delete school.classes[adminGrade];school.assignments=school.assignments.filter(a=>a.grade!==adminGrade);chosenClasses.clear();syncLinks();updateSelectors();updateAdmin();save()};
+$('addAssignment').onclick=()=>{const grade=adminGrade,subject=$('assignSubject').value,teacher=$('assignTeacher').value,classes=[...chosenClasses];if(!teachers.some(t=>t.id===teacher&&(t.subjects||[]).includes(subject))){alert('Escolha um professor e uma disciplina cadastrada para ele.');return}if(!school.grades.includes(grade)){alert('Inclua primeiro o ano e suas turmas.');return}const available=classes.filter(c=>(school.classes[grade]||[]).includes(c));if(!available.length){alert('Marque uma ou mais turmas já cadastradas para este ano.');return}for(const classroom of available){const a={grade,classroom,subject,teacher};if(!school.assignments.some(x=>Object.keys(a).every(k=>x[k]===a[k])))school.assignments.push(a)}syncLinks();updateSelectors();renderAssignments();save()};
+$('unlinkSelected').onclick=()=>{const selected=[...document.querySelectorAll('.link-choice:checked')].map(x=>JSON.parse(x.dataset.link));if(!selected.length){alert('Marque os vínculos que deseja remover.');return}if(!confirm('Desvincular '+selected.length+' associação(ões)?'))return;school.assignments=school.assignments.filter(a=>!selected.some(x=>Object.keys(x).every(k=>x[k]===a[k])));syncLinks();updateSelectors();renderAssignments();save()};
+$('selectAllLinks').onchange=e=>document.querySelectorAll('.link-choice').forEach(c=>c.checked=e.target.checked);
+$('tabAdmin').onclick=()=>{$('admin').classList.remove('hide');$('work').classList.add('hide');$('tabAdmin').classList.add('active');$('tabProfessor').classList.remove('active');updateAdmin()};
+$('tabProfessor').onclick=()=>{$('admin').classList.add('hide');$('work').classList.remove('hide');$('tabProfessor').classList.add('active');$('tabAdmin').classList.remove('active')};
+$('saveSchool').onclick=()=>{if(!school.grades.length){alert('Selecione pelo menos um ano.');return}school.name=$('school').value.trim()||'ESCOLA EXEMPLO';syncLinks();updateSelectors();updateAdmin();save();alert('Cadastro salvo neste navegador.')};
+$('logo').onchange=e=>fileData(e.target.files[0],src=>{school.logo=src;save();render()});
+$('teacher').onchange=()=>{editing=null;fields.forEach(f=>$(f).innerHTML='');updateSelectors();save()};$('grade').onchange=()=>{updateSelectors();save()};$('classroom').onchange=()=>{syncPreviewButton();render();save()};$('nextPreviewClass').onclick=()=>{const selected=selectedWorkClasses();if(!selected.length)return;const index=selected.indexOf($('classroom').value);$('classroom').value=selected[(index+1)%selected.length];syncPreviewButton();render();save()};$('subject').onchange=save;$('day').onchange=()=>{render();save()};
+document.querySelectorAll('[data-command]').forEach(b=>b.onclick=()=>{$(b.dataset.target).focus();document.execCommand(b.dataset.command,false,null)});
+$('image').onchange=e=>fileData(e.target.files[0],src=>{addImg($('imageTarget').value,src);$('image').value=''});
+fields.forEach(f=>$(f).addEventListener('paste',e=>{const file=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith('image/'));if(file){e.preventDefault();fileData(file,src=>addImg(f,src))}else if(e.clipboardData?.getData('text/html')){e.preventDefault();document.execCommand('insertHTML',false,clean(e.clipboardData.getData('text/html')))}}));
+$('clear').onclick=()=>{editing=null;fields.forEach(f=>$(f).innerHTML='')};
+$('add').onclick=()=>{const subject=$('subject').value;const selected=selectedWorkClasses();if(!subject||!$('grade').value||!selected.length){alert('Selecione ano, disciplina e ao menos uma turma autorizada.');return}if(editing&&selected.length!==1){alert('Para editar uma atividade, marque somente a turma do registro.');return}const values=Object.fromEntries(fields.map(f=>[f,clean($(f).innerHTML)]));if(!fields.some(f=>$(f).textContent.trim()||$(f).querySelector('img'))){alert('Preencha ao menos um campo.');return}const oldEntry=editing?entries.find(a=>a.id===editing):null;const rec={id:editing||Date.now(),unitId:activeUnit,teacher:$('teacher').value,grade:$('grade').value,classroom:$('classroom').value,day:$('day').value,subject,...values,status:'pendente',history:oldEntry?.history||[]};if(editing){rec.history.push({at:new Date().toISOString(),by:'Professor (perfil simulado)',action:'reenviado',changed:true,note:'Atividade editada e reenviada para revisão'});}if(editing)entries=entries.map(a=>a.id===editing?rec:a);else for(const classroom of selected)entries.push({...rec,id:Date.now()+Math.floor(Math.random()*1000000),classroom});editing=null;fields.forEach(f=>$(f).innerHTML='');save();render()};
+$('reset').onclick=()=>{if(!confirm('Substituir atividades pelos exemplos?'))return;entries=structuredClone(demo);editing=null;save();render()};
+$('saveNotice').onclick=()=>{const html=clean($('noticeEditor').innerHTML);if(!html.replace(/<[^>]*>/g,'').trim()&&!/<img\b/i.test(html)){alert('Preencha o comunicado.');return}const k=noticeKey(),i=noticeIndex(),n={...k,html,status:'pendente'};if(i>=0)notices[i]=n;else notices.push(n);save();render()};
+$('approveNotice').onclick=()=>{const i=noticeIndex();if(i<0){alert('Salve o comunicado primeiro.');return}notices[i].status='aprovado';save();render()};
+$('removeNotice').onclick=()=>{const i=noticeIndex();if(i<0)return;if(!confirm('Excluir comunicado desta data/turma?'))return;notices.splice(i,1);$('noticeEditor').innerHTML='';save();render()};
+$('noticeImage').onchange=e=>fileData(e.target.files[0],src=>{const img=document.createElement('img');img.src=src;img.alt='Imagem do comunicado';$('noticeEditor').append(img);e.target.value=''});
+$('noticeEditor').addEventListener('paste',e=>{const f=[...(e.clipboardData?.files||[])].find(x=>x.type.startsWith('image/'));if(f){e.preventDefault();fileData(f,src=>{const img=document.createElement('img');img.src=src;img.alt='Imagem do comunicado';$('noticeEditor').append(img)})}});
+$('print').onclick=()=>window.print();
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify({school,activeUnit,teachers,subjectCatalog,entries,notices,day:$('day').value},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='anna-agenda-editorial-02.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500)};
+$('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data.entries)||!data.school||!Array.isArray(data.school.grades)||!data.school.classes)throw Error('Estrutura incompatível');if(!confirm('Substituir os dados locais?'))return;school={name:String(data.school.name||'ESCOLA EXEMPLO'),assignments:Array.isArray(data.school.assignments)?data.school.assignments:undefined,logo:/^data:image\/(png|jpeg|webp);base64,/.test(data.school.logo||'')?data.school.logo:'',grades:data.school.grades.filter(x=>typeof x==='string'),classes:data.school.classes};activeUnit='sede';if(Array.isArray(data.teachers))teachers=data.teachers.filter(t=>t&&typeof t.id==='string'&&typeof t.name==='string').map(t=>({...t,subjects:Array.isArray(t.subjects)?t.subjects:[],links:[]}));if(Array.isArray(data.subjectCatalog))subjectCatalog.splice(0,subjectCatalog.length,...data.subjectCatalog.filter(x=>typeof x==='string'));notices=Array.isArray(data.notices)?data.notices:[];entries=data.entries.filter(x=>x&&typeof x.subject==='string'&&['pendente','revisao','esclarecimento','aprovado'].includes(x.status)).map(x=>({...x,...Object.fromEntries(fields.map(f=>[f,clean(String(x[f]||''))]))}));if(data.day)$('day').value=data.day;for(const t of teachers){if(!Array.isArray(t.subjects))t.subjects=[...new Set((t.links||[]).map(l=>l.subject))];if(!Array.isArray(t.links))t.links=[]}ensureAssignments();initUnits();adminGrade=school.grades[0]||'2º ano';chosenClasses=new Set(school.classes[adminGrade]||[]);renderTeacherSubjects();teacherOptions();updateAdmin();updateSelectors();save();render()}catch(err){alert('Importação falhou: '+err.message)}e.target.value=''};
+const stored=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||localStorage.getItem('anna-editorial-prova-v064')||localStorage.getItem('anna-editorial-prova-v063')||localStorage.getItem('anna-editorial-prova-v06')||localStorage.getItem('anna-editorial-prova-v02')||'null')}catch{return null}})();if(stored&&stored.school&&Array.isArray(stored.entries)){school=stored.school;entries=stored.entries;notices=Array.isArray(stored.notices)?stored.notices:[];if(Array.isArray(stored.teachers))teachers=stored.teachers.map(t=>({...t,subjects:Array.isArray(t.subjects)?t.subjects:[],links:[]}));if(Array.isArray(stored.subjectCatalog))subjectCatalog.splice(0,subjectCatalog.length,...stored.subjectCatalog);if(stored.day)$('day').value=stored.day}else{entries=structuredClone(demo);$('day').value='2026-09-03'}
+for(const t of teachers){if(!Array.isArray(t.subjects))t.subjects=[...new Set((t.links||[]).map(l=>l.subject))];if(!Array.isArray(t.links))t.links=[]}ensureAssignments();activeUnit=stored?.activeUnit||'sede';initUnits();adminGrade=school.grades.includes('2º ano')?'2º ano':(school.grades[0]||'2º ano');chosenClasses=new Set(school.classes[adminGrade]||[]);renderTeacherSubjects();teacherOptions();if(teachers.some(t=>t.id===stored?.teacher))$('teacher').value=stored.teacher;updateSelectors();if(stored?.grade){$('grade').value=stored.grade;updateSelectors()}if(stored?.classroom){$('classroom').value=stored.classroom;updateSelectors()}updateAdmin();render();
+</script><script id="history08js">(()=>{'use strict';
+const nav=document.querySelector('nav.tabs'),main=document.querySelector('main');if(!nav||!main)return;
+const tab=document.createElement('button');tab.id='tabHistory08';tab.type='button';tab.textContent='Histórico de agendas';nav.append(tab);
+const section=document.createElement('section');section.id='history08';section.innerHTML=`<h2>Histórico de agendas</h2><p class="muted">Consulta local demonstrativa. Acesso por perfil e auditoria segura serão implementados com autenticação real.</p><div class="hist08-controls"><label>Data <input id="histDate08" type="date" lang="pt-BR"></label><label>Ano <select id="histGrade08"></select></label><label>Turma <select id="histClass08"></select></label><label>Situação <select id="histStatus08"><option value="">Todas</option><option value="aprovado">Liberadas</option><option value="pendente">Enviadas</option><option value="revisao">Em revisão</option><option value="esclarecimento">Esclarecimento</option></select></label><button type="button" id="histSearch08" class="secondary hist08-action">Buscar</button><button type="button" id="histClear08" class="secondary hist08-action">Limpar filtros</button></div><div style="overflow-x:auto"><table class="hist08-table"><thead><tr><th>Data</th><th>Ano / Turma</th><th>Disciplina</th><th>Situação</th><th>Ações</th></tr></thead><tbody id="histRows08"></tbody></table></div><div id="histDetail08" aria-live="polite"></div>`;
+main.append(section);
+const el=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const data=()=>Array.isArray(entries)?entries:[];
+function filters(){const g=el('histGrade08'),c=el('histClass08');const oldG=g.value,oldC=c.value;const grades=[...new Set(data().map(x=>x.grade).filter(Boolean))].sort();g.replaceChildren(new Option('Todos os anos',''),...grades.map(x=>new Option(x,x)));g.value=grades.includes(oldG)?oldG:'';const classes=[...new Set(data().filter(x=>!g.value||x.grade===g.value).map(x=>x.classroom).filter(Boolean))].sort();c.replaceChildren(new Option('Todas as turmas',''),...classes.map(x=>new Option(x,x)));c.value=classes.includes(oldC)?oldC:''}
+function show(){filters();const date=el('histDate08').value,grade=el('histGrade08').value,cl=el('histClass08').value,status=el('histStatus08').value;const matches=data().filter(a=>(!date||a.day===date)&&(!grade||a.grade===grade)&&(!cl||a.classroom===cl)&&(!status||a.status===status)).sort((a,b)=>String(b.day).localeCompare(String(a.day)));const body=el('histRows08');body.replaceChildren();for(const a of matches){const tr=document.createElement('tr');for(const v of [formatDateBR(a.day),`${a.grade||'—'} / ${a.classroom||'—'}`,a.subject||'—',typeof reviewStatus==='function'?reviewStatus(a):a.status||'—']){const td=document.createElement('td');td.textContent=v;tr.append(td)}const td=document.createElement('td'),b=document.createElement('button');b.type='button';b.className='secondary hist08-action';b.textContent='Consultar';b.onclick=()=>detail(a);td.append(b);tr.append(td);body.append(tr)}if(!matches.length){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=5;td.textContent='Nenhuma agenda encontrada para esses filtros.';tr.append(td);body.append(tr)}}
+function detail(a){const history=Array.isArray(a.history)?a.history:[];const teacher=teachers.find(t=>t.id===a.teacher)?.name||'Professor não identificado';const box=el('histDetail08');box.replaceChildren();const h=document.createElement('h3');h.textContent=`${a.subject||'Atividade'} — ${a.grade||''} ${a.classroom||''} — ${formatDateBR(a.day)}`;box.append(h);const info=document.createElement('p');info.textContent=`Professor: ${teacher} · Situação: ${typeof reviewStatus==='function'?reviewStatus(a):a.status||'—'}`;box.append(info);for(const [key,label] of [['classContent','Conteúdo trabalhado em sala'],['classActivity','Atividade realizada em classe'],['homeActivity','Atividade para casa']]){const title=document.createElement('strong');title.textContent=label;box.append(title);const content=document.createElement('div');content.className='item';content.innerHTML=typeof clean==='function'?clean(a[key]||''):esc(a[key]||'');box.append(content)}const head=document.createElement('h4');head.textContent=`Registros de revisão (${history.length})`;box.append(head);if(!history.length){const p=document.createElement('p');p.textContent='Nenhuma revisão registrada nesta atividade.';box.append(p)}for(const event of history){const p=document.createElement('p');p.className='item';p.textContent=`${event.at?new Date(event.at).toLocaleString('pt-BR'):'Sem data'} · ${event.by||'Usuário não identificado'} · ${event.action||'Alteração'}${event.changed?' · Texto alterado':''}${event.note?' · '+event.note:''}`;box.append(p)}box.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function open(){el('admin').classList.add('hide');el('work').classList.add('hide');section.classList.add('active');for(const b of nav.querySelectorAll('button'))b.classList.toggle('active',b===tab);show()}
+tab.addEventListener('click',open);for(const id of ['tabAdmin','tabProfessor'])el(id)?.addEventListener('click',()=>section.classList.remove('active'));
+el('histGrade08').addEventListener('change',()=>{const c=el('histClass08');c.value='';show()});el('histSearch08').addEventListener('click',show);el('histClear08').addEventListener('click',()=>{el('histDate08').value='';el('histGrade08').value='';el('histClass08').value='';el('histStatus08').value='';el('histDetail08').replaceChildren();show()});
+})();</script><script>
+(()=>{'use strict';
+function tick(){const el=document.getElementById('clock-countdown'),sel=document.getElementById('clock-turn');if(!el||!sel)return;const now=new Date(),hour=sel.value==='afternoon'?15:9;const deadline=new Date(now.getFullYear(),now.getMonth(),now.getDate(),hour);if(now>=deadline)deadline.setDate(deadline.getDate()+1);const n=Math.max(0,Math.ceil((deadline-now)/1000));el.textContent=[Math.floor(n/3600),Math.floor(n%3600/60),n%60].map(v=>String(v).padStart(2,'0')).join(':');const t=document.getElementById('clock-target');if(t)t.textContent='Próximo prazo de referência: '+deadline.toLocaleDateString('pt-BR')+' às '+String(hour).padStart(2,'0')+'h00';}
+document.getElementById('clock-turn')?.addEventListener('change',tick);tick();setInterval(tick,1000);
+// Saída controlada pelo script de sessão.
+})();
+</script><footer class="anna-site-footer"><div>© 2026 AnnA One. Todos os direitos reservados.</div><div>Desenvolvido por Prof. Elison Borges · Projeto e desenvolvimento original.</div><small>AnnA Agenda · Versão experimental</small></footer><script>
+(async()=>{'use strict';
+const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const goLogin=()=>location.replace('login.html');
+try{
+const response=await fetch(AUTH+'/get-session',{credentials:'include',cache:'no-store'});
+if(!response.ok)throw new Error('Sessão indisponível');
+const data=await response.json(),user=data?.user||data?.data?.user;
+if(!user?.id)throw new Error('Sessão ausente');
+const welcome=document.getElementById('profWelcome');
+if(welcome){
+const hour=new Date().getHours(),greeting=hour>=5&&hour<12?'Bom dia':hour<18?'Boa tarde':'Boa noite';
+const name=String(user.name||user.displayName||'Professor').trim();
+welcome.replaceChildren(document.createTextNode(greeting+', '+name+'!'));
+const small=document.createElement('small');small.textContent=(user.email||'')+' · Demonstração com dados fictícios';welcome.appendChild(small);
+}
+
+// Consulta piloto isolada: não altera os campos nem os dados locais do formulário.
+const api='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
+const status=document.getElementById('neonPilotStatus'),results=document.getElementById('neonPilotResults');
+const retry=document.getElementById('neonPilotRetry');
+let querying=false;
+const queryAssignments=async()=>{
+if(querying)return;
+querying=true;
+if(retry){retry.disabled=true;retry.textContent='Consultando…'}
+status.textContent='Diagnóstico v3 · iniciando consulta segura ao Neon…';
+results.replaceChildren();
+try{
+// Neon Auth /get-session retorna um identificador de sessão opaco.
+// O endpoint /token emite o JWT assinado necessário para a Data API.
+let token;
+try{
+const jwtResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store',headers:{Accept:'application/json'}});
+if(!jwtResponse.ok)throw new Error('Emissão do JWT: HTTP '+jwtResponse.status);
+const jwtData=await jwtResponse.json();
+token=jwtData?.token||jwtData?.data?.token||jwtData?.access_token||jwtData?.data?.access_token;
+if(typeof token!=='string'||token.split('.').length!==3)throw new Error('O endpoint /token não retornou um JWT de três partes');
+try{
+const [header,payload]=token.split('.');
+const decode=part=>JSON.parse(atob(part.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(part.length/4)*4,'=')));
+const jwtHeader=decode(header),jwtPayload=decode(payload);
+if(!jwtHeader?.alg||!jwtPayload?.sub)throw new Error('cabeçalho ou identidade ausente');
+}catch{throw new Error('O token recebido não possui codificação JWT válida; a API não foi chamada')}
+}catch(e){status.textContent='Não foi possível obter JWT do Neon Auth: '+e.message+'. Nenhum dado local foi alterado.';return}
+status.textContent='Consultando atribuições autorizadas…';
+try{
+const response=await fetch(api+'/teacher_class_assignments?select=id,class_id,subject_id,unit_id,active&active=eq.true',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});
+if(!response.ok){
+let detail='';try{const body=await response.json();detail=String(body?.code||body?.message||body?.error||'').slice(0,240)}catch{}
+throw new Error('API HTTP '+response.status+(detail?' · '+detail:''));
+}
+const rows=await response.json();
+if(!Array.isArray(rows))throw new Error('Formato de resposta inesperado');
+status.textContent=rows.length+' vínculo(s) retornado(s) pela API para a sessão atual.';
+if(rows.length){
+try{
+const ids=(field)=>[...new Set(rows.map(x=>x[field]).filter(Boolean))].join(',');
+const get=async(table,select,filter)=>{
+const resp=await fetch(api+'/'+table+'?select='+encodeURIComponent(select)+'&id=in.('+ids(filter)+')',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});
+if(!resp.ok)throw new Error(table+' HTTP '+resp.status);
+return await resp.json();
+};
+const [classes,subjects,units]=await Promise.all([
+get('school_classes','id,grade,class_letter,shift', 'class_id'),
+get('school_subjects','id,name','subject_id'),
+get('school_units','id,name','unit_id')]);
+const byId=(list,id)=>list.find(x=>x.id===id);
+const workFields=document.getElementById('neonWorkFields');
+const workSelect=document.getElementById('neonWorkAssignment');
+const workDetail=document.getElementById('neonWorkDetail');
+if(workFields&&workSelect&&workDetail){
+const available=rows.map(item=>({item,turma:byId(classes,item.class_id),disciplina:byId(subjects,item.subject_id),unidade:byId(units,item.unit_id)}));
+workSelect.replaceChildren();
+available.forEach(({item,turma,disciplina,unidade},i)=>{
+const option=document.createElement('option');option.value=String(i);
+option.textContent=(turma?turma.grade+' '+turma.class_letter:'Turma')+' · '+(disciplina?.name||'Disciplina');
+workSelect.append(option);
+});
+const showSelection=()=>{
+const record=available[Number(workSelect.value)];if(!record)return;
+workDetail.textContent='Unidade: '+(record.unidade?.name||'—')+' | Turma: '+(record.turma?record.turma.grade+' '+record.turma.class_letter+' ('+record.turma.shift+')':'—')+' | Disciplina: '+(record.disciplina?.name||'—');
+const pilot=document.getElementById('neonAuthorizedAssignment');if(pilot)pilot.value=record.item.class_id+'|'+record.item.subject_id;
+};
+const draftFields=['neonDraftDate','neonDraftContent','neonDraftClassActivity','neonDraftHomeActivity'];
+let activeDraftTextId='neonDraftContent';
+const richDraftIds=['neonDraftContent','neonDraftClassActivity','neonDraftHomeActivity'];
+const escapeDraft=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const safeDraftHtml=html=>{
+const template=document.createElement('template');template.innerHTML=String(html||'');
+const allowed=new Set(['B','STRONG','I','EM','U','UL','OL','LI','P','DIV','BR']);
+const walk=node=>{for(const child of [...node.childNodes]){if(child.nodeType===8){child.remove();continue}if(child.nodeType!==1)continue;if(!allowed.has(child.tagName)){child.replaceWith(document.createTextNode(child.textContent||''));continue}for(const attr of [...child.attributes])child.removeAttribute(attr.name);walk(child)}};
+walk(template.content);return template.innerHTML;
+};
+const draftValue=id=>richDraftIds.includes(id)?safeDraftHtml(document.getElementById(id).innerHTML):document.getElementById(id).value;
+const setDraftValue=(id,value)=>{
+const field=document.getElementById(id);
+if(!richDraftIds.includes(id)){field.value=value||'';return}
+let raw=String(value||'');
+if(/&lt;\/?(?:ul|ol|li|strong|b|em|i|p|div|br)\b/i.test(raw)){
+const decoder=document.createElement('textarea');decoder.innerHTML=raw;raw=decoder.value;
+}
+field.innerHTML=/<[a-z][\s\S]*>/i.test(raw)?safeDraftHtml(raw):escapeDraft(raw).replace(/\n/g,'<br>');
+};
+for(const id of richDraftIds)document.getElementById(id).addEventListener('focus',()=>{activeDraftTextId=id});
+document.querySelectorAll('#neonDraftFormatting [data-draft-format]').forEach(button=>{
+button.addEventListener('mousedown',event=>event.preventDefault());
+button.addEventListener('click',()=>{
+const field=document.getElementById(activeDraftTextId),selection=window.getSelection();
+const help=document.getElementById('neonDraftFormatHelp');
+if(!field||!selection||selection.isCollapsed||!field.contains(selection.anchorNode)||!field.contains(selection.focusNode)){help.textContent='Para aplicar a formatação, selecione primeiro o texto dentro de um dos campos.';return}
+field.focus();
+if(button.dataset.draftFormat==='list'){
+const range=selection.getRangeAt(0).cloneRange();
+const items=selection.toString().split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+if(!items.length){help.textContent='Selecione o texto que deseja transformar em tópicos.';return}
+const list=document.createElement('ul');
+for(const text of items){const li=document.createElement('li');li.textContent=text;list.append(li)}
+range.deleteContents();range.insertNode(list);
+selection.removeAllRanges();
+const caret=document.createRange();caret.setStartAfter(list);caret.collapse(true);selection.addRange(caret);
+help.textContent='Somente o trecho selecionado foi transformado em tópicos.';
+}else{
+const commands={bold:'bold',italic:'italic',underline:'underline'};
+const names={bold:'Negrito',italic:'Itálico',underline:'Sublinhado'};
+const format=button.dataset.draftFormat;
+document.execCommand(commands[format],false,null);
+help.textContent=names[format]+' aplicado ao texto selecionado.';
+}
+field.dispatchEvent(new Event('input',{bubbles:true}));
+});
+});
+const draftStatus=document.getElementById('neonDraftStatus');
+const accessButton=document.getElementById('neonTestAccess');
+accessButton.onclick=async()=>{
+const output=document.getElementById('neonTestAccessResult');
+accessButton.disabled=true;output.textContent='Verificando acesso de leitura…';
+try{
+const jwtResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store',headers:{Accept:'application/json'}});
+if(!jwtResponse.ok)throw new Error('Sessão: HTTP '+jwtResponse.status);
+const jwt=await jwtResponse.json();const token=jwt?.token||jwt?.data?.token||jwt?.access_token||jwt?.data?.access_token;
+if(typeof token!=='string'||token.split('.').length!==3)throw new Error('JWT indisponível');
+const response=await fetch(api+'/agenda_authenticated_entries_test?select=id&limit=1',{cache:'no-store',headers:{Authorization:'Bearer '+token,Accept:'application/json'}});
+if(!response.ok){const body=await response.text();let detail='';try{const parsed=JSON.parse(body);detail=[parsed.code,parsed.message,parsed.hint].filter(Boolean).join(' · ')}catch{detail=body.slice(0,240)}throw new Error('Data API: HTTP '+response.status+(detail?' — '+detail.slice(0,320):''))}
+const rows=await response.json();if(!Array.isArray(rows))throw new Error('Resposta inesperada');
+output.textContent='Leitura autorizada pelo Neon. '+(rows.length?'Existe ao menos um registro visível.':'Nenhum registro visível (esperado para tabela vazia).')+' Nenhuma gravação realizada.';
+}catch(error){output.textContent='Teste não concluído: '+error.message+'. Nenhuma gravação realizada.'}
+finally{accessButton.disabled=false}
+};
+const draftKey=()=>{const record=available[Number(workSelect.value)];return record?'anna-neon-draft:'+record.item.unit_id+':'+record.item.class_id+':'+record.item.subject_id:null};
+const restoreDraft=()=>{
+for(const id of draftFields)setDraftValue(id,'');neonDraftImageData='';draftImageInput.value='';draftImageStatus.textContent='';
+try{const raw=sessionStorage.getItem(draftKey());if(raw){const draft=JSON.parse(raw);neonDraftImageData=typeof draft.image==='string'&&/^data:image\/(png|jpeg|webp);base64,/i.test(draft.image)?draft.image:'';draftImageStatus.textContent=neonDraftImageData?'Imagem do rascunho recuperada.':'';for(const id of draftFields)setDraftValue(id,draft[id]||'');draftStatus.textContent='Rascunho desta sessão recuperado.';}else draftStatus.textContent='Nenhum rascunho nesta sessão.'}catch{draftStatus.textContent='Não foi possível recuperar o rascunho.'}
+};
+let neonDraftImageData='';
+const draftImageStatus=document.getElementById('neonDraftImageStatus');
+const draftImageInput=document.getElementById('neonDraftImage');
+draftImageInput.onchange=()=>{
+const file=draftImageInput.files?.[0];if(!file)return;
+if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>1048576){draftImageStatus.textContent='Selecione PNG, JPG ou WebP de até 1 MB.';draftImageInput.value='';return}
+const reader=new FileReader();reader.onload=()=>{neonDraftImageData=String(reader.result||'');draftImageStatus.textContent='Imagem pronta para a prévia.';saveDraftInSession();if(!draftPreview.hidden)refreshDraftPreview()};reader.onerror=()=>{draftImageStatus.textContent='Falha ao ler imagem.'};reader.readAsDataURL(file);
+};
+document.getElementById('neonDraftRemoveImage').onclick=()=>{neonDraftImageData='';draftImageInput.value='';draftImageStatus.textContent='Imagem removida do rascunho.';saveDraftInSession();if(!draftPreview.hidden)refreshDraftPreview()};
+const draftPreview=document.getElementById('neonDraftPreview');
+const refreshDraftPreview=()=>{
+const record=available[Number(workSelect.value)];if(!record)return;
+const val=id=>draftValue(id).trim();
+const date=val('neonDraftDate');
+const dateText=/^\\d{4}-\\d{2}-\\d{2}$/.test(date)?date.slice(8,10)+'/'+date.slice(5,7)+'/'+date.slice(0,4):'Não informada';
+const headerLines=[
+'RASCUNHO DE AULA · NÃO ENVIADO AO NEON',
+'Unidade: '+(record.unidade?.name||'—'),
+'Turma: '+(record.turma?record.turma.grade+' '+record.turma.class_letter+' ('+record.turma.shift+')':'—'),
+'Disciplina: '+(record.disciplina?.name||'—'),
+'Data: '+dateText
+];
+const sections=[['CONTEÚDO TRABALHADO','neonDraftContent'],['ATIVIDADE EM CLASSE','neonDraftClassActivity'],['ATIVIDADE PARA CASA','neonDraftHomeActivity']];
+draftPreview.replaceChildren();
+const intro=document.createElement('div');
+for(const line of headerLines){const row=document.createElement('div');row.textContent=line;row.style.marginBottom='4px';intro.append(row)}
+intro.style.marginBottom='18px';
+draftPreview.append(intro);
+for(const [heading,id] of sections){const title=document.createElement('h4');title.textContent=heading;draftPreview.append(title);const body=document.createElement('div');body.innerHTML=safeDraftHtml(draftValue(id))||'—';draftPreview.append(body)}
+draftPreview.hidden=false;
+let image=draftPreview.querySelector('img');if(image)image.remove();if(neonDraftImageData){image=document.createElement('img');image.src=neonDraftImageData;image.alt='Imagem ilustrativa do rascunho';image.style.cssText='display:block;max-width:100%;max-height:320px;object-fit:contain;margin-top:12px';draftPreview.append(image)}
+};
+document.getElementById('neonDraftPreviewButton').onclick=refreshDraftPreview;
+const previewPrint=document.createElement('button');previewPrint.type='button';previewPrint.className='secondary';previewPrint.textContent='Imprimir rascunho autenticado';previewPrint.style.marginLeft='8px';
+document.getElementById('neonDraftPreviewButton').after(previewPrint);
+previewPrint.onclick=()=>{
+refreshDraftPreview();
+const popup=window.open('','_blank','width=850,height=700');
+if(!popup){draftStatus.textContent='O navegador bloqueou a janela de impressão.';return}
+const previewCopy=draftPreview.cloneNode(true);previewCopy.removeAttribute('id');
+for(const img of previewCopy.querySelectorAll('img')){if(!['data:image/png;base64,','data:image/jpeg;base64,','data:image/webp;base64,'].some(prefix=>(img.getAttribute('src')||'').startsWith(prefix)))img.remove()}
+popup.document.open();
+popup.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Rascunho autenticado - AnnA Agenda</title><style>@page{size:A4;margin:18mm}body{font:14px Arial,sans-serif;line-height:1.5;color:#202b3b}h4{font-size:14px;margin:16px 0 5px;page-break-after:avoid}ul,ol{padding-left:25px}li{margin:3px 0}img{display:block;max-width:100%;max-height:95mm;object-fit:contain;break-inside:avoid;margin-top:14px}div{overflow-wrap:anywhere}p{margin:5px 0}</style></head><body></body></html>');
+popup.document.body.append(popup.document.importNode(previewCopy,true));
+popup.document.close();
+const images=[...popup.document.images];
+Promise.all(images.map(img=>img.complete?Promise.resolve():new Promise(resolve=>{img.onload=resolve;img.onerror=resolve}))).then(()=>{popup.focus();popup.print()});
+};
+const saveDraftInSession=()=>{try{const key=draftKey();if(!key)return false;const draft={image:neonDraftImageData};for(const id of draftFields)draft[id]=draftValue(id);sessionStorage.setItem(key,JSON.stringify(draft));draftStatus.textContent='Rascunho salvo automaticamente nesta sessão. Não enviado ao Neon.';return true}catch{draftStatus.textContent='Não foi possível guardar o rascunho nesta sessão.';return false}};
+for(const id of draftFields)document.getElementById(id).addEventListener('input',()=>{saveDraftInSession();if(!draftPreview.hidden)refreshDraftPreview()});
+document.getElementById('neonDraftSave').onclick=()=>{saveDraftInSession()};
+let editingNeonId=null;
+const savedSelect=document.getElementById('neonSavedDrafts');
+const loadResult=document.getElementById('neonLoadResult');
+let savedRows=[];
+const getDraftToken=async()=>{
+const response=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store',headers:{Accept:'application/json'}});
+if(!response.ok)throw new Error('Sessão HTTP '+response.status);
+const json=await response.json(),token=json?.token||json?.data?.token||json?.access_token||json?.data?.access_token;
+if(typeof token!=='string'||token.split('.').length!==3)throw new Error('JWT indisponível');
+return token;
+};
+const readNeonError=async response=>{
+const body=await response.text();let message=body.slice(0,200);
+try{const data=JSON.parse(body);message=[data.code,data.message].filter(Boolean).join(' · ')}catch{}
+return 'HTTP '+response.status+' — '+message;
+};
+const clearNeonSelection=()=>{editingNeonId=null;document.getElementById('neonSaveTest').textContent='Salvar novo rascunho no Neon (TESTE)'};
+document.getElementById('neonLoadTest').onclick=async()=>{
+const record=available[Number(workSelect.value)];
+if(!record?.item?.id){loadResult.textContent='Selecione uma turma autorizada.';return}
+const button=document.getElementById('neonLoadTest');button.disabled=true;loadResult.textContent='Consultando…';
+try{
+const token=await getDraftToken();
+const url=api+'/agenda_authenticated_entries_test?select=id,assignment_id,agenda_date,status,class_content_html,class_activity_html,homework_html,updated_at&assignment_id=eq.'+encodeURIComponent(record.item.id)+'&order=updated_at.desc&limit=50';
+const response=await fetch(url,{cache:'no-store',headers:{Authorization:'Bearer '+token}});
+if(!response.ok)throw new Error(await readNeonError(response));
+const rows=await response.json();if(!Array.isArray(rows))throw new Error('Resposta inesperada');
+savedRows=rows;savedSelect.replaceChildren();
+const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecione um rascunho';savedSelect.append(placeholder);
+for(const item of rows){const option=document.createElement('option');option.value=item.id;option.textContent=item.agenda_date+' · '+item.status+' · '+item.id.slice(0,8);savedSelect.append(option)}
+loadResult.textContent=rows.length+' rascunho(s) encontrado(s). Selecione e clique em Abrir.';
+}catch(error){savedRows=[];savedSelect.replaceChildren();loadResult.textContent='Falha na consulta: '+error.message}
+finally{button.disabled=false}
+};
+const reviewFeedback=document.createElement('section');
+reviewFeedback.style.cssText='margin:12px 0;padding:12px;border:1px solid #cbd9e9;border-radius:9px;background:#f5f9ff';
+reviewFeedback.setAttribute('aria-live','polite');
+const reviewTitle=document.createElement('strong');reviewTitle.textContent='Devolutiva da Coordenação';
+const reviewBody=document.createElement('div');reviewBody.style.marginTop='7px';
+const reviewButton=document.createElement('button');reviewButton.type='button';reviewButton.className='secondary';reviewButton.textContent='Consultar devolutiva';reviewButton.style.marginTop='8px';
+reviewFeedback.append(reviewTitle,reviewBody,reviewButton);
+savedSelect.after(reviewFeedback);
+const showReview=async()=>{
+reviewBody.replaceChildren();
+const item=savedRows.find(row=>row.id===savedSelect.value);
+if(!item){reviewBody.textContent='Selecione um lançamento na lista.';return}
+reviewBody.textContent='Consultando histórico autorizado…';reviewButton.disabled=true;
+try{
+ const token=await getDraftToken();
+ const response=await fetch(api+'/agenda_coordinator_reviews_test?select=decision,observation,created_at&entry_id=eq.'+encodeURIComponent(item.id)+'&order=created_at.desc&limit=20',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});
+ if(!response.ok)throw new Error(await readNeonError(response));
+ const reviews=await response.json();reviewBody.replaceChildren();
+ const state=document.createElement('p');state.textContent='Situação oficial: '+item.status;reviewBody.append(state);
+ if(!reviews.length){const p=document.createElement('p');p.textContent='Nenhuma devolutiva registrada.';reviewBody.append(p)}
+ for(const review of reviews){
+  const p=document.createElement('p');p.style.margin='7px 0';p.textContent=new Date(review.created_at).toLocaleString('pt-BR')+' · '+review.decision+(review.observation?' · '+review.observation:'');reviewBody.append(p);
+ }
+}catch(error){reviewBody.textContent='Não foi possível consultar a devolutiva: '+error.message}
+finally{reviewButton.disabled=false}
+};
+reviewButton.onclick=showReview;
+savedSelect.addEventListener('change',()=>{reviewBody.textContent='Clique em Consultar devolutiva para ver as decisões deste lançamento.'});
+document.getElementById('neonOpenTest').onclick=()=>{
+const item=savedRows.find(row=>row.id===savedSelect.value);
+if(!item){loadResult.textContent='Selecione um rascunho da lista.';return}
+if(item.status!=='draft'){loadResult.textContent='Somente rascunhos podem ser editados nesta etapa.';return}
+if(!confirm('Abrir este rascunho do Neon? O conteúdo atual do editor será substituído.'))return;
+setDraftValue('neonDraftDate',item.agenda_date.slice(0,10));
+setDraftValue('neonDraftContent',item.class_content_html);
+setDraftValue('neonDraftClassActivity',item.class_activity_html);
+setDraftValue('neonDraftHomeActivity',item.homework_html);
+neonDraftImageData='';draftImageInput.value='';draftImageStatus.textContent='Imagem não recuperada do Neon nesta etapa.';
+editingNeonId=item.id;document.getElementById('neonSaveTest').textContent='Atualizar rascunho no Neon (TESTE)';
+saveDraftInSession();draftPreview.hidden=true;loadResult.textContent='Rascunho '+item.id+' aberto para edição.';
+};
+document.getElementById('neonNewTest').onclick=()=>{
+if(!confirm('Iniciar novo rascunho? O editor atual será limpo; alterações não salvas no Neon serão perdidas.'))return;
+clearNeonSelection();for(const id of draftFields)setDraftValue(id,'');
+neonDraftImageData='';draftImageInput.value='';draftImageStatus.textContent='';saveDraftInSession();draftPreview.hidden=true;loadResult.textContent='Novo rascunho iniciado.';
+};
+const neonSaveButton=document.getElementById('neonSaveTest');
+neonSaveButton.onclick=async()=>{
+const output=document.getElementById('neonSaveTestResult');
+const record=available[Number(workSelect.value)];
+const date=draftValue('neonDraftDate');
+if(!record?.item?.id){output.textContent='Vínculo de turma não identificado. Consulte novamente as turmas autorizadas.';return}
+if(!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(date)){const field=document.getElementById('neonDraftDate');document.getElementById('neonDraftPanel').open=true;field.focus();output.textContent='A data do rascunho autenticado está '+(date?'inválida ('+date+').':'vazia.')+' Preencha o campo “Data da aula” logo acima da barra Negrito/Itálico/Sublinhado. A data do formulário de demonstração é independente.';return}
+if(!draftValue('neonDraftContent')&&!draftValue('neonDraftClassActivity')&&!draftValue('neonDraftHomeActivity')){output.textContent='Preencha ao menos um campo de conteúdo ou atividade.';return}
+if(!confirm(editingNeonId?'Atualizar o rascunho selecionado no Neon de testes?':'Salvar um novo rascunho FICTÍCIO no Neon de testes? Esta ação grava dados no banco.'))return;
+neonSaveButton.disabled=true;output.textContent='Salvando rascunho fictício no Neon…';
+try{
+const jwtResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store',headers:{Accept:'application/json'}});
+if(!jwtResponse.ok)throw new Error('Sessão: HTTP '+jwtResponse.status);
+const jwt=await jwtResponse.json(),token=jwt?.token||jwt?.data?.token||jwt?.access_token||jwt?.data?.access_token;
+if(typeof token!=='string'||token.split('.').length!==3)throw new Error('JWT indisponível');
+const payload=JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(token.split('.')[1].length/4)*4,'=')));
+if(!/^[0-9a-f-]{36}$/i.test(payload.sub||''))throw new Error('Identidade JWT inválida');
+const data={assignment_id:record.item.id,author_user_id:payload.sub,agenda_date:date,class_content_html:draftValue('neonDraftContent'),class_activity_html:draftValue('neonDraftClassActivity'),homework_html:draftValue('neonDraftHomeActivity'),status:'draft'};
+const endpoint=api+'/agenda_authenticated_entries_test'+(editingNeonId?'?id=eq.'+encodeURIComponent(editingNeonId):'');
+const body=editingNeonId?{agenda_date:data.agenda_date,class_content_html:data.class_content_html,class_activity_html:data.class_activity_html,homework_html:data.homework_html}:data;
+const response=await fetch(endpoint,{method:editingNeonId?'PATCH':'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json',Prefer:'return=representation'},body:JSON.stringify(body)});
+if(!response.ok){const body=await response.text();let message=body.slice(0,240);try{const error=JSON.parse(body);message=[error.code,error.message].filter(Boolean).join(' · ')}catch{}throw new Error('HTTP '+response.status+' — '+message)}
+const result=await response.json();
+if(!Array.isArray(result)||result.length!==1||!result[0].id)throw new Error('Resposta de confirmação inesperada; confira antes de tentar novamente');
+editingNeonId=result[0].id;neonSaveButton.textContent='Atualizar rascunho no Neon (TESTE)';
+saveDraftInSession();
+output.textContent='Rascunho TESTE gravado no Neon. ID: '+result[0].id+'. Imagem não enviada nesta etapa. O editor local foi preservado.';
+}catch(error){output.textContent='Não foi possível confirmar o salvamento: '+error.message+'. Confira o banco antes de repetir.'}
+finally{neonSaveButton.disabled=false}
+};
+document.getElementById('neonSubmitTest').onclick=async()=>{
+const output=document.getElementById('neonLoadResult');
+if(!editingNeonId){output.textContent='Primeiro abra um rascunho salvo no Neon.';return}
+const entryId=editingNeonId;
+if(!confirm('Enviar este rascunho de TESTE à Coordenação? Após o envio ele ficará bloqueado para edição. Alterações feitas apenas no editor, ainda não salvas no Neon, NÃO serão enviadas.'))return;
+const button=document.getElementById('neonSubmitTest');button.disabled=true;output.textContent='Enviando registro de teste…';
+try{
+const token=await getDraftToken();
+const response=await fetch(api+'/agenda_authenticated_entries_test?id=eq.'+encodeURIComponent(entryId),{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json',Prefer:'return=representation'},body:JSON.stringify({status:'submitted'})});
+if(!response.ok)throw new Error(await readNeonError(response));
+const changed=await response.json();if(!Array.isArray(changed)||changed.length!==1||changed[0].id!==entryId||changed[0].status!=='submitted')throw new Error('Envio não confirmado. Verifique o estado do registro antes de repetir.');
+clearNeonSelection();savedRows=[];savedSelect.replaceChildren();
+output.textContent='Registro de TESTE enviado com sucesso (status: submitted). Edição no Neon bloqueada. Consulte novamente para visualizar a situação.';
+}catch(error){output.textContent='Envio não confirmado: '+error.message}
+finally{button.disabled=false}
+};
+workSelect.onchange=()=>{clearNeonSelection();savedRows=[];savedSelect.replaceChildren();loadResult.textContent='';showSelection();restoreDraft();draftPreview.hidden=true};workFields.hidden=false;showSelection();restoreDraft();
+}
+const context=document.getElementById('neonFormContext');
+const contextText=document.getElementById('neonFormContextText');
+if(context&&contextText){
+const summary=rows.map(item=>{
+const turma=byId(classes,item.class_id),disciplina=byId(subjects,item.subject_id),unidade=byId(units,item.unit_id);
+return (unidade?.name||'Unidade')+' · '+(turma?turma.grade+' '+turma.class_letter+' ('+turma.shift+')':'Turma')+' · '+(disciplina?.name||'Disciplina');
+}).join(' | ');
+contextText.textContent=summary;
+context.hidden=false;
+}
+const heading=document.createElement('strong');heading.textContent='Turmas autorizadas no Neon';results.append(heading);
+const fieldset=document.createElement('fieldset');fieldset.style.cssText='border:1px solid #cbd5e1;border-radius:8px;padding:10px;margin-top:10px';
+const legend=document.createElement('legend');legend.textContent='Seleção autenticada para a Minha Agenda';fieldset.append(legend);
+const label=document.createElement('label');label.textContent='Turma e disciplina autorizadas';label.style.display='block';
+const selector=document.createElement('select');selector.id='neonAuthorizedAssignment';selector.style.cssText='display:block;width:100%;max-width:540px;margin:8px 0';
+for(const item of rows){
+const turma=byId(classes,item.class_id),disciplina=byId(subjects,item.subject_id),unidade=byId(units,item.unit_id);
+const option=document.createElement('option');option.value=item.class_id+'|'+item.subject_id;
+option.textContent=(unidade?.name||'Unidade')+' · '+(turma?turma.grade+' '+turma.class_letter:'Turma')+' · '+(disciplina?.name||'Disciplina');
+selector.append(option);
+}
+label.append(selector);fieldset.append(label);
+const note=document.createElement('p');note.style.cssText='font-size:12px;color:#52667c;margin:4px 0';note.textContent='Seleção vinculada à sessão do Professor. Nesta etapa não altera nem grava os dados locais da agenda.';fieldset.append(note);results.append(fieldset);
+for(const item of rows){
+const turma=byId(classes,item.class_id),disciplina=byId(subjects,item.subject_id),unidade=byId(units,item.unit_id);
+const p=document.createElement('p');
+p.textContent=(unidade?.name||'Unidade não identificada')+' · '+(turma?turma.grade+' '+turma.class_letter+' ('+turma.shift+')':'Turma não identificada')+' · '+(disciplina?.name||'Disciplina não identificada');
+results.append(p);
+}
+status.textContent=rows.length+' vínculo(s) autenticado(s), com nomes carregados do Neon. O formulário permanece inalterado.';
+}catch(e){status.textContent=rows.length+' vínculo(s) autenticado(s); nomes ainda indisponíveis: '+e.message}
+return;
+}
+for(const item of rows){const p=document.createElement('p');p.textContent='Turma ID: '+item.class_id+' · Disciplina ID: '+item.subject_id+' · Unidade ID: '+item.unit_id;results.append(p)}
+}catch(e){status.textContent='Consulta ainda não disponível: '+e.message+'. Nenhuma alteração foi feita no formulário.'}
+}catch(e){status.textContent='Falha inesperada na consulta: '+(e?.message||'erro desconhecido')}
+finally{querying=false;if(retry){retry.disabled=false;retry.textContent='Consultar novamente · v3'}}
+};
+retry?.addEventListener('click',event=>{event.preventDefault();queryAssignments()});
+queryAssignments();
+const exit=document.getElementById('logoutBtn');
+if(exit)exit.addEventListener('click',async()=>{
+exit.disabled=true;exit.textContent='Saindo…';
+try{await fetch(AUTH+'/sign-out',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:'{}'});}catch(e){console.warn('Falha ao confirmar encerramento remoto da sessão.');}
+goLogin();
+});
+document.documentElement.classList.remove('anna-auth-pending');
+}catch(e){goLogin();}
+})();
+</script></body></html>
