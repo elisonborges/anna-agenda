@@ -344,7 +344,7 @@ const draftStatus=document.getElementById('neonDraftStatus');
 const draftKey=()=>{const record=available[Number(workSelect.value)];return record?'anna-neon-draft:'+record.item.unit_id+':'+record.item.class_id+':'+record.item.subject_id:null};
 const restoreDraft=()=>{
 for(const id of draftFields)document.getElementById(id).value='';neonDraftImageData='';draftImageInput.value='';draftImageStatus.textContent='';
-try{const raw=sessionStorage.getItem(draftKey());if(raw){const draft=JSON.parse(raw);neonDraftImageData=typeof draft.image==='string'&&/^data:image\\/(png|jpeg|webp);base64,/i.test(draft.image)?draft.image:'';draftImageStatus.textContent=neonDraftImageData?'Imagem do rascunho recuperada.':'';for(const id of draftFields)document.getElementById(id).value=draft[id]||'';draftStatus.textContent='Rascunho desta sessão recuperado.';}else draftStatus.textContent='Nenhum rascunho nesta sessão.'}catch{draftStatus.textContent='Não foi possível recuperar o rascunho.'}
+try{const raw=sessionStorage.getItem(draftKey());if(raw){const draft=JSON.parse(raw);neonDraftImageData=typeof draft.image==='string'&&/^data:image\/(png|jpeg|webp);base64,/i.test(draft.image)?draft.image:'';draftImageStatus.textContent=neonDraftImageData?'Imagem do rascunho recuperada.':'';for(const id of draftFields)document.getElementById(id).value=draft[id]||'';draftStatus.textContent='Rascunho desta sessão recuperado.';}else draftStatus.textContent='Nenhum rascunho nesta sessão.'}catch{draftStatus.textContent='Não foi possível recuperar o rascunho.'}
 };
 let neonDraftImageData='';
 const draftImageStatus=document.getElementById('neonDraftImageStatus');
