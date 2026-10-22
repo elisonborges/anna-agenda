@@ -16,15 +16,35 @@ label{margin:9px 0 4px}input{padding:10px 12px}button{padding:11px;margin-top:13
 <header><a class="brand" href="https://annaone.com.br/" aria-label="AnnA One"><img src="assets/anna-symbol.svg" alt=""><div><b>AnnA <span>One</span></b><small>Tecnologia e Educação Juntas</small></div></a></header>
 <main><section class="panel" aria-labelledby="heading"><div class="eyebrow">AnnA One · Agenda Educacional</div><h1 id="heading">Acesso do Professor</h1><p>Seu espaço para organizar e registrar as atividades da agenda escolar.</p>
 <form id="auth-form"><label for="email">E-mail institucional</label><input id="email" type="email" autocomplete="username" placeholder="professor@escola.com.br" required><label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" placeholder="Sua senha" required><button id="enter" type="submit">Entrar</button></form>
+<section id="reset-panel" style="margin-top:14px;padding:14px;border:1px solid #cbd9e9;border-radius:12px" aria-labelledby="reset-title"><h2 id="reset-title" style="font-size:17px;margin:0 0 8px">Criar ou redefinir senha</h2><p>Solicite um link seguro por e-mail para definir sua senha.</p><label for="reset-email">E-mail da conta</label><input id="reset-email" type="email" autocomplete="email" placeholder="seu@email.com"><button id="send-reset" type="button">Enviar link para definir senha</button><div id="reset-confirm" hidden><label for="new-password">Nova senha (mínimo de 8 caracteres)</label><input id="new-password" type="password" autocomplete="new-password" minlength="8"><label for="repeat-password">Confirmar nova senha</label><input id="repeat-password" type="password" autocomplete="new-password" minlength="8"><button id="finish-reset" type="button">Salvar nova senha</button></div><p id="reset-status" role="status" style="margin:12px 0 0"></p></section>
 <section id="verify-panel" style="margin-top:14px;padding:14px;border:1px solid #cbd9e9;border-radius:12px" aria-labelledby="verify-title"><h2 id="verify-title" style="font-size:17px;margin:0 0 8px">Verificar e-mail da conta</h2><p>Para contas que ainda não verificaram o e-mail. O código será enviado pelo Neon Auth.</p><label for="verify-email">E-mail da conta</label><input id="verify-email" type="email" autocomplete="email" placeholder="seu@email.com"><button id="send-verify" type="button">Enviar código de verificação</button><label for="verify-otp">Código recebido por e-mail</label><input id="verify-otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12" placeholder="Código de verificação"><button id="confirm-verify" type="button">Confirmar código</button><p id="verify-status" role="status" style="margin:12px 0 0"></p></section>
 <div class="notice" id="auth-status" role="status"><strong>Integração experimental com Neon Auth.</strong> O acesso será verificado no serviço de autenticação. A página do Professor usa apenas dados fictícios. A verificação de sessão no navegador não substitui autorização de backend.</div>
 <a class="preview" href="index.html">Ver página do Professor (requer login) →</a></section></main>
-<footer>AnnA One · Agenda Educacional · Ambiente experimental · Login v0.10.11</footer><script>
+<footer>AnnA One · Agenda Educacional · Ambiente experimental · Login v0.10.12</footer><script>
 (()=>{'use strict';
 const AUTH='https://ep-broad-sound-b6rokoew.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
 const form=document.getElementById('auth-form'),status=document.getElementById('auth-status'),button=document.getElementById('enter');
 function message(text){status.textContent=text;}
 async function request(path,options={}){const r=await fetch(AUTH+path,{credentials:'include',cache:'no-store',...options});const payload=await r.json().catch(()=>({}));if(!r.ok||payload.error)throw new Error(payload.error?.message||'Falha na autenticação ('+r.status+').');return payload;}
+const resetEmail=document.getElementById('reset-email'),resetStatus=document.getElementById('reset-status'),sendReset=document.getElementById('send-reset'),finishReset=document.getElementById('finish-reset');
+function resetMessage(t){resetStatus.textContent=t}
+const params=new URLSearchParams(location.search),resetToken=params.get('token');
+if(resetToken){document.getElementById('reset-confirm').hidden=false;resetMessage('Defina uma nova senha para concluir a recuperação.');}
+sendReset.addEventListener('click',async()=>{
+const email=(resetEmail.value||document.getElementById('email').value).trim();if(!email){resetMessage('Informe seu e-mail.');return}resetEmail.value=email;sendReset.disabled=true;resetMessage('Solicitando recuperação…');
+try{const redirectTo=new URL('login.html',location.href);redirectTo.search='?recuperar=1';await request('/request-password-reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,redirectTo:redirectTo.href})});resetMessage('Se a conta puder receber recuperação, o Neon Auth enviará um link por e-mail. Confira também o spam.');}
+catch(err){resetMessage('Não foi possível solicitar a recuperação: '+err.message)}
+finally{sendReset.disabled=false}
+});
+finishReset.addEventListener('click',async()=>{
+const password=document.getElementById('new-password').value,repeat=document.getElementById('repeat-password').value;
+if(!resetToken){resetMessage('Abra primeiro o link de recuperação enviado ao seu e-mail.');return}
+if(password.length<8||password!==repeat){resetMessage('Use pelo menos 8 caracteres e confirme a mesma senha.');return}
+finishReset.disabled=true;resetMessage('Salvando nova senha…');
+try{await request('/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({newPassword:password,token:resetToken})});document.getElementById('new-password').value='';document.getElementById('repeat-password').value='';document.getElementById('reset-confirm').hidden=true;history.replaceState(null,'',location.pathname);resetMessage('Senha definida. Entre com seu e-mail e a nova senha no formulário acima.');}
+catch(err){resetMessage('Não foi possível definir a senha: '+err.message)}
+finally{finishReset.disabled=false}
+});
 const verifyEmail=document.getElementById('verify-email'),verifyOtp=document.getElementById('verify-otp'),verifyStatus=document.getElementById('verify-status'),sendVerify=document.getElementById('send-verify'),confirmVerify=document.getElementById('confirm-verify');
 function verificationMessage(value){verifyStatus.textContent=value}
 sendVerify.addEventListener('click',async()=>{
