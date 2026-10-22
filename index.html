@@ -324,6 +324,18 @@ get('school_subjects','id,name','subject_id'),
 get('school_units','id,name','unit_id')]);
 const byId=(list,id)=>list.find(x=>x.id===id);
 const heading=document.createElement('strong');heading.textContent='Turmas autorizadas no Neon';results.append(heading);
+const fieldset=document.createElement('fieldset');fieldset.style.cssText='border:1px solid #cbd5e1;border-radius:8px;padding:10px;margin-top:10px';
+const legend=document.createElement('legend');legend.textContent='Seleção autenticada para a Minha Agenda';fieldset.append(legend);
+const label=document.createElement('label');label.textContent='Turma e disciplina autorizadas';label.style.display='block';
+const selector=document.createElement('select');selector.id='neonAuthorizedAssignment';selector.style.cssText='display:block;width:100%;max-width:540px;margin:8px 0';
+for(const item of rows){
+const turma=byId(classes,item.class_id),disciplina=byId(subjects,item.subject_id),unidade=byId(units,item.unit_id);
+const option=document.createElement('option');option.value=item.class_id+'|'+item.subject_id;
+option.textContent=(unidade?.name||'Unidade')+' · '+(turma?turma.grade+' '+turma.class_letter:'Turma')+' · '+(disciplina?.name||'Disciplina');
+selector.append(option);
+}
+label.append(selector);fieldset.append(label);
+const note=document.createElement('p');note.style.cssText='font-size:12px;color:#52667c;margin:4px 0';note.textContent='Seleção vinculada à sessão do Professor. Nesta etapa não altera nem grava os dados locais da agenda.';fieldset.append(note);results.append(fieldset);
 for(const item of rows){
 const turma=byId(classes,item.class_id),disciplina=byId(subjects,item.subject_id),unidade=byId(units,item.unit_id);
 const p=document.createElement('p');
