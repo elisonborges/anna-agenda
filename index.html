@@ -283,7 +283,10 @@ if(!token){status.textContent='Sessão válida, mas sem token de acesso disponí
 status.textContent='Consultando atribuições autorizadas…';
 try{
 const response=await fetch(api+'/teacher_class_assignments?select=class_id,subject_id,unit_id,active&active=eq.true',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});
-if(!response.ok)throw new Error('API respondeu HTTP '+response.status);
+if(!response.ok){
+let detail='';try{const body=await response.json();detail=String(body?.code||body?.message||body?.error||'').slice(0,240)}catch{}
+throw new Error('API HTTP '+response.status+(detail?' · '+detail:''));
+}
 const rows=await response.json();
 if(!Array.isArray(rows))throw new Error('Formato de resposta inesperado');
 status.textContent=rows.length+' vínculo(s) retornado(s) pela API para a sessão atual.';
