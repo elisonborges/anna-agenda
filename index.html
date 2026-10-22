@@ -310,6 +310,30 @@ throw new Error('API HTTP '+response.status+(detail?' · '+detail:''));
 const rows=await response.json();
 if(!Array.isArray(rows))throw new Error('Formato de resposta inesperado');
 status.textContent=rows.length+' vínculo(s) retornado(s) pela API para a sessão atual.';
+if(rows.length){
+try{
+const ids=(field)=>[...new Set(rows.map(x=>x[field]).filter(Boolean))].join(',');
+const get=async(table,select,filter)=>{
+const resp=await fetch(api+'/'+table+'?select='+encodeURIComponent(select)+'&id=in.('+ids(filter)+')',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});
+if(!resp.ok)throw new Error(table+' HTTP '+resp.status);
+return await resp.json();
+};
+const [classes,subjects,units]=await Promise.all([
+get('school_classes','id,grade,class_letter,shift', 'class_id'),
+get('school_subjects','id,name','subject_id'),
+get('school_units','id,name','unit_id')]);
+const byId=(list,id)=>list.find(x=>x.id===id);
+const heading=document.createElement('strong');heading.textContent='Turmas autorizadas no Neon';results.append(heading);
+for(const item of rows){
+const turma=byId(classes,item.class_id),disciplina=byId(subjects,item.subject_id),unidade=byId(units,item.unit_id);
+const p=document.createElement('p');
+p.textContent=(unidade?.name||'Unidade não identificada')+' · '+(turma?turma.grade+' '+turma.class_letter+' ('+turma.shift+')':'Turma não identificada')+' · '+(disciplina?.name||'Disciplina não identificada');
+results.append(p);
+}
+status.textContent=rows.length+' vínculo(s) autenticado(s), com nomes carregados do Neon. O formulário permanece inalterado.';
+}catch(e){status.textContent=rows.length+' vínculo(s) autenticado(s); nomes ainda indisponíveis: '+e.message}
+return;
+}
 for(const item of rows){const p=document.createElement('p');p.textContent='Turma ID: '+item.class_id+' · Disciplina ID: '+item.subject_id+' · Unidade ID: '+item.unit_id;results.append(p)}
 }catch(e){status.textContent='Consulta ainda não disponível: '+e.message+'. Nenhuma alteração foi feita no formulário.'}
 }catch(e){status.textContent='Falha inesperada na consulta: '+(e?.message||'erro desconhecido')}
