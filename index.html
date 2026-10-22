@@ -257,7 +257,7 @@ document.getElementById('clock-turn')?.addEventListener('change',tick);tick();se
 })();
 </script><footer class="anna-site-footer"><div>© 2026 AnnA One. Todos os direitos reservados.</div><div>Desenvolvido por Prof. Elison Borges · Projeto e desenvolvimento original.</div><small>AnnA Agenda · Versão experimental</small></footer><script>
 (async()=>{'use strict';
-const AUTH='https://ep-broad-sound-b6rokoew.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
 const goLogin=()=>location.replace('login.html');
 try{
 const response=await fetch(AUTH+'/get-session',{credentials:'include',cache:'no-store'});
@@ -273,7 +273,7 @@ const small=document.createElement('small');small.textContent=(user.email||'')+'
 }
 
 // Consulta piloto isolada: não altera os campos nem os dados locais do formulário.
-const api='https://ep-broad-sound-b6rokoew.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
+const api='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
 const status=document.getElementById('neonPilotStatus'),results=document.getElementById('neonPilotResults');
 const retry=document.getElementById('neonPilotRetry');
 let querying=false;
