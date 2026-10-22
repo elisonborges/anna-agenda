@@ -67,7 +67,17 @@ await request('/sign-in/email',{method:'POST',headers:{'Content-Type':'applicati
 document.getElementById('password').value='';
 const session=await request('/get-session');
 if(!session?.user?.id&&!session?.data?.user?.id){message('Credenciais aceitas, mas a sessão não pôde ser confirmada neste navegador. Pode haver bloqueio de cookies de terceiros. Nenhum acesso foi liberado.');return;}
-const destino=new URLSearchParams(location.search).get('destino');const pagina=destino==='coordenacao'?'coordenacao.html':'index.html';message('Autenticação confirmada. Abrindo o ambiente solicitado…');location.assign(pagina);
+message('Autenticação confirmada. Identificando seu perfil…');
+const jwtResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store',headers:{Accept:'application/json'}});
+if(!jwtResponse.ok)throw new Error('Não foi possível obter a sessão para consultar o perfil.');
+const jwtData=await jwtResponse.json(),jwt=jwtData?.token||jwtData?.data?.token||jwtData?.access_token||jwtData?.data?.access_token;
+if(typeof jwt!=='string')throw new Error('Token de sessão indisponível.');
+const roleResponse=await fetch('https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1/rpc/agenda_login_destination_test',{method:'POST',headers:{Authorization:'Bearer '+jwt,'Content-Type':'application/json',Accept:'application/json'},body:'{}',cache:'no-store'});
+if(!roleResponse.ok)throw new Error('Consulta do perfil: HTTP '+roleResponse.status);
+const role=await roleResponse.json();
+if(role!=='coordenacao'&&role!=='professor'){message('Sua conta está autenticada, mas não possui perfil ativo de professor ou coordenador.');return}
+message('Perfil identificado: '+(role==='coordenacao'?'Coordenação':'Professor')+'. Abrindo ambiente…');
+location.assign(role==='coordenacao'?'coordenacao.html':'index.html');
 }catch(err){message('Não foi possível concluir o login: '+(err instanceof TypeError?'falha de comunicação/CORS ou cookies bloqueados':err.message));}
 finally{button.disabled=false;}
 });
