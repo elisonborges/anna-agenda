@@ -28,8 +28,8 @@ $('new').addEventListener('click',()=>open(null));$('cancel').addEventListener('
 </script><script>
 (()=>{
 'use strict';
-const AUTH='https://ep-broad-sound-b6rokoew.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
-const API='https://ep-broad-sound-b6rokoew.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
+const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const API='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
 const dateFilter=document.getElementById('neonCoordDate'),clearDate=document.getElementById('neonCoordClearDate');let lastRows=[],lastBasic=false;const statusFilter=document.getElementById('neonCoordStatusFilter'),searchFilter=document.getElementById('neonCoordSearch'),teacherFilter=document.getElementById('neonCoordTeacherFilter'),classFilter=document.getElementById('neonCoordClassFilter');const summary=document.getElementById('neonCoordSummary');const button=document.getElementById('neonCoordLoad'),status=document.getElementById('neonCoordStatus'),results=document.getElementById('neonCoordResults');
 const addText=(parent,tag,value)=>{const el=document.createElement(tag);el.textContent=value;parent.append(el);return el};
 function refreshSchoolFilters(){
