@@ -62,11 +62,11 @@ if(item.unidade)addText(card,'small','Unidade: '+item.unidade);
 for(const [label,key] of [['Conteúdo trabalhado','class_content_html'],['Atividade em classe','class_activity_html'],['Atividade para casa','homework_html']]){
 addText(card,'h4',label);const plain=document.createElement('div');const template=document.createElement('div');template.innerHTML=String(item[key]||'');plain.textContent=template.textContent||'—';plain.style.whiteSpace='pre-wrap';card.append(plain)}
 const review=document.createElement('section');review.style.cssText='border-top:1px solid #dce7f2;margin-top:16px;padding-top:12px';
-const title=addText(review,'h4','Pré-revisão da Coordenação · rascunho local');title.style.margin='0 0 8px';
-const note=addText(review,'p','Confira o lançamento e prepare uma observação. Nesta etapa, nada será salvo ou enviado ao professor.');note.style.fontSize='12px';
+const title=addText(review,'h4','Revisão da Coordenação');title.style.margin='0 0 8px';
+const note=addText(review,'p','Confira o lançamento, selecione a decisão e registre. A situação será atualizada e a devolutiva ficará disponível ao professor.');note.style.fontSize='12px';
 const checklist=document.createElement('label');checklist.style.cssText='display:flex;align-items:center;gap:8px;font-size:13px;margin:8px 0';
 const check=document.createElement('input');check.type='checkbox';check.style.width='auto';checklist.append(check,document.createTextNode('Conferi conteúdo e atividades deste lançamento'));review.append(checklist);
-const observation=document.createElement('textarea');observation.rows=3;observation.placeholder='Observações para futura devolutiva ao professor';observation.setAttribute('aria-label','Observações da pré-revisão');observation.style.cssText='display:block;width:100%;padding:10px;border:1px solid #cbd9e9;border-radius:8px;box-sizing:border-box';review.append(observation);
+const observation=document.createElement('textarea');observation.rows=3;observation.placeholder='Observação da Coordenação (obrigatória para solicitar esclarecimento)';observation.setAttribute('aria-label','Observações da pré-revisão');observation.style.cssText='display:block;width:100%;padding:10px;border:1px solid #cbd9e9;border-radius:8px;box-sizing:border-box';review.append(observation);
 const preview=document.createElement('button');preview.type='button';preview.textContent='Preparar prévia da revisão';preview.style.marginTop='10px';review.append(preview);
 const feedback=addText(review,'p','');feedback.setAttribute('role','status');feedback.style.fontSize='13px';
 preview.addEventListener('click',()=>{if(!check.checked){feedback.textContent='Marque a conferência do lançamento antes de preparar a prévia.';return}feedback.textContent='Prévia preparada nesta tela: '+(observation.value.trim()||'Sem observações adicionais')+'. Nenhuma informação foi enviada ao Neon.'});
@@ -74,7 +74,7 @@ const decisionLabel=document.createElement('label');decisionLabel.textContent='D
 const decision=document.createElement('select');decision.style.cssText='display:block;width:100%;max-width:340px;padding:9px;border:1px solid #cbd9e9;border-radius:8px;margin-top:5px';
 for(const [value,label] of [['in_review','Em análise'],['needs_clarification','Solicitar esclarecimento'],['released','Liberar lançamento']]){const option=document.createElement('option');option.value=value;option.textContent=label;decision.append(option)}
 review.append(decisionLabel,decision);
-const save=document.createElement('button');save.type='button';save.textContent='Registrar decisão no histórico Neon';save.style.cssText='display:block;margin-top:10px';review.append(save);save.disabled=true;save.title='Aguardando consulta ao histórico';
+const save=document.createElement('button');save.type='button';save.textContent='Registrar decisão e atualizar situação';save.style.cssText='display:block;margin-top:10px';review.append(save);save.disabled=true;save.title='Aguardando consulta ao histórico';
 const history=addText(review,'p','Histórico ainda não consultado.');history.style.fontSize='12px';
 const getToken=async()=>{const response=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store'});if(!response.ok)throw new Error('Sessão expirada. Entre novamente.');const data=await response.json();const token=data?.token||data?.data?.token||data?.access_token||data?.data?.access_token;if(typeof token!=='string'||token.split('.').length!==3)throw new Error('Token de sessão indisponível.');return token};
 const reviewerFromToken=token=>{const part=token.split('.')[1];const normalized=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(normalized.padEnd(Math.ceil(normalized.length/4)*4,'=')));return payload.sub};
@@ -85,7 +85,7 @@ save.disabled=true;feedback.textContent='Registrando decisão…';
 try{const token=await getToken();const reviewer=reviewerFromToken(token);if(!/^[a-f0-9-]{36}$/i.test(reviewer))throw new Error('Identificação da sessão inválida.');
 const response=await fetch(API+'/rpc/register_coordinator_decision_test',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({p_entry:item.id,p_decision:decision.value,p_observation:observation.value.trim()})});
 if(!response.ok){const body=await response.text();throw new Error('HTTP '+response.status+' '+body.slice(0,240))}
-feedback.textContent='Decisão registrada e situação oficial atualizada. Atualize a lista para conferir o novo estado.';await loadHistory();
+feedback.textContent='Decisão registrada e situação oficial atualizada. Recarregando lançamentos…';button.click();
 }catch(err){feedback.textContent='Registro não concluído: '+err.message}finally{await loadHistory()}});
 loadHistory();
 card.append(review);
