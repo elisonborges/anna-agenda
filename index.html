@@ -359,8 +359,20 @@ const field=document.getElementById(activeDraftTextId),selection=window.getSelec
 const help=document.getElementById('neonDraftFormatHelp');
 if(!field||!selection||selection.isCollapsed||!field.contains(selection.anchorNode)||!field.contains(selection.focusNode)){help.textContent='Para aplicar a formatação, selecione primeiro o texto dentro de um dos campos.';return}
 field.focus();
-document.execCommand(button.dataset.draftFormat==='bold'?'bold':'insertUnorderedList',false,null);
-help.textContent='Formatação aplicada diretamente ao texto selecionado.';
+if(button.dataset.draftFormat==='list'){
+const range=selection.getRangeAt(0).cloneRange();
+const items=selection.toString().split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
+if(!items.length){help.textContent='Selecione o texto que deseja transformar em tópicos.';return}
+const list=document.createElement('ul');
+for(const text of items){const li=document.createElement('li');li.textContent=text;list.append(li)}
+range.deleteContents();range.insertNode(list);
+selection.removeAllRanges();
+const caret=document.createRange();caret.setStartAfter(list);caret.collapse(true);selection.addRange(caret);
+help.textContent='Somente o trecho selecionado foi transformado em tópicos.';
+}else{
+document.execCommand('bold',false,null);
+help.textContent='Negrito aplicado ao texto selecionado.';
+}
 field.dispatchEvent(new Event('input',{bubbles:true}));
 });
 });
