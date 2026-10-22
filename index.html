@@ -550,9 +550,9 @@ if(!confirm('Enviar este rascunho de TESTE à Coordenação? Após o envio ele f
 const button=document.getElementById('neonSubmitTest');button.disabled=true;output.textContent='Enviando registro de teste…';
 try{
 const token=await getDraftToken();
-const response=await fetch(api+'/rpc/submit_teacher_agenda_test',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({p_entry:entryId})});
+const response=await fetch(api+'/agenda_authenticated_entries_test?id=eq.'+encodeURIComponent(entryId),{method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json',Prefer:'return=representation'},body:JSON.stringify({status:'submitted'})});
 if(!response.ok)throw new Error(await readNeonError(response));
-const ok=await response.json();if(ok!==true)throw new Error('Registro não enviado: verifique vínculo, autoria e situação do rascunho.');
+const changed=await response.json();if(!Array.isArray(changed)||changed.length!==1||changed[0].id!==entryId||changed[0].status!=='submitted')throw new Error('Envio não confirmado. Verifique o estado do registro antes de repetir.');
 clearNeonSelection();savedRows=[];savedSelect.replaceChildren();
 output.textContent='Registro de TESTE enviado com sucesso (status: submitted). Edição no Neon bloqueada. Consulte novamente para visualizar a situação.';
 }catch(error){output.textContent='Envio não confirmado: '+error.message}
