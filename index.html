@@ -385,22 +385,19 @@ const record=available[Number(workSelect.value)];if(!record)return;
 const val=id=>draftValue(id).trim();
 const date=val('neonDraftDate');
 const dateText=/^\\d{4}-\\d{2}-\\d{2}$/.test(date)?date.slice(8,10)+'/'+date.slice(5,7)+'/'+date.slice(0,4):'Não informada';
-draftPreview.textContent=[
+const headerLines=[
 'RASCUNHO DE AULA · NÃO ENVIADO AO NEON',
 'Unidade: '+(record.unidade?.name||'—'),
 'Turma: '+(record.turma?record.turma.grade+' '+record.turma.class_letter+' ('+record.turma.shift+')':'—'),
 'Disciplina: '+(record.disciplina?.name||'—'),
-'Data: '+dateText,
-'',
-'CONTEÚDO TRABALHADO',val('neonDraftContent')||'—',
-'',
-'ATIVIDADE EM CLASSE',val('neonDraftClassActivity')||'—',
-'',
-'ATIVIDADE PARA CASA',val('neonDraftHomeActivity')||'—'
-].join('\\n');
+'Data: '+dateText
+];
 const sections=[['CONTEÚDO TRABALHADO','neonDraftContent'],['ATIVIDADE EM CLASSE','neonDraftClassActivity'],['ATIVIDADE PARA CASA','neonDraftHomeActivity']];
-const header=draftPreview.textContent.split('CONTEÚDO TRABALHADO')[0];
-draftPreview.replaceChildren();const intro=document.createElement('div');intro.textContent=header;draftPreview.append(intro);
+draftPreview.replaceChildren();
+const intro=document.createElement('div');
+for(const line of headerLines){const row=document.createElement('div');row.textContent=line;row.style.marginBottom='4px';intro.append(row)}
+intro.style.marginBottom='18px';
+draftPreview.append(intro);
 for(const [heading,id] of sections){const title=document.createElement('h4');title.textContent=heading;draftPreview.append(title);const body=document.createElement('div');body.innerHTML=safeDraftHtml(draftValue(id))||'—';draftPreview.append(body)}
 draftPreview.hidden=false;
 let image=draftPreview.querySelector('img');if(image)image.remove();if(neonDraftImageData){image=document.createElement('img');image.src=neonDraftImageData;image.alt='Imagem ilustrativa do rascunho';image.style.cssText='display:block;max-width:100%;max-height:320px;object-fit:contain;margin-top:12px';draftPreview.append(image)}
