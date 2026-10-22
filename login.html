@@ -6,7 +6,24 @@
 </style></head><body>
 <header><a class="brand" href="https://annaone.com.br/" aria-label="AnnA One"><img src="assets/anna-symbol.svg" alt=""><div><b>AnnA <span>One</span></b><small>Tecnologia e Educação Juntas</small></div></a></header>
 <main><section class="panel" aria-labelledby="heading"><div class="eyebrow">AnnA One · Agenda Educacional</div><h1 id="heading">Acesso do Professor</h1><p>Seu espaço para organizar e registrar as atividades da agenda escolar.</p>
-<form><label for="email">E-mail institucional</label><input id="email" type="email" autocomplete="username" placeholder="professor@escola.com.br" disabled><label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" placeholder="Sua senha" disabled><button type="button" disabled>Entrar</button></form>
-<div class="notice" role="status"><strong>Prévia visual:</strong> o acesso seguro pelo Neon Auth ainda está em integração. Por segurança, os campos permanecem desativados e nenhuma senha é coletada nesta página.</div>
+<form id="auth-form"><label for="email">E-mail institucional</label><input id="email" type="email" autocomplete="username" placeholder="professor@escola.com.br" required><label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" placeholder="Sua senha" required><button id="enter" type="submit">Entrar</button></form>
+<div class="notice" id="auth-status" role="status"><strong>Integração experimental com Neon Auth.</strong> O acesso será verificado no serviço de autenticação. A página do Professor ainda é uma demonstração pública, sem dados reais.</div>
 <a class="preview" href="index.html">Visualizar a demonstração do Professor →</a></section></main>
-<footer>AnnA One · Agenda Educacional · Ambiente experimental</footer></body></html>
+<footer>AnnA One · Agenda Educacional · Ambiente experimental</footer><script>
+(()=>{'use strict';
+const AUTH='https://ep-broad-sound-b6rokoew.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const form=document.getElementById('auth-form'),status=document.getElementById('auth-status'),button=document.getElementById('enter');
+function message(text){status.textContent=text;}
+async function request(path,options={}){const r=await fetch(AUTH+path,{credentials:'include',cache:'no-store',...options});const payload=await r.json().catch(()=>({}));if(!r.ok||payload.error)throw new Error(payload.error?.message||'Falha na autenticação ('+r.status+').');return payload;}
+form.addEventListener('submit',async e=>{e.preventDefault();button.disabled=true;message('Verificando credenciais com o Neon Auth…');const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;
+try{
+await request('/sign-in/email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+document.getElementById('password').value='';
+const session=await request('/get-session');
+if(!session?.user?.id&&!session?.data?.user?.id){message('Credenciais aceitas, mas a sessão não pôde ser confirmada neste navegador. Pode haver bloqueio de cookies de terceiros. Nenhum acesso foi liberado.');return;}
+message('Autenticação confirmada no Neon Auth. A área do Professor ainda é uma prévia pública; integração de permissões e dados pendente.');
+}catch(err){message('Não foi possível concluir o login: '+(err instanceof TypeError?'falha de comunicação/CORS ou cookies bloqueados':err.message));}
+finally{button.disabled=false;}
+});
+})();
+</script></body></html>
