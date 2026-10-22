@@ -398,7 +398,7 @@ if(!jwtResponse.ok)throw new Error('Sessão: HTTP '+jwtResponse.status);
 const jwt=await jwtResponse.json();const token=jwt?.token||jwt?.data?.token||jwt?.access_token||jwt?.data?.access_token;
 if(typeof token!=='string'||token.split('.').length!==3)throw new Error('JWT indisponível');
 const response=await fetch(api+'/agenda_authenticated_entries_test?select=id&limit=1',{cache:'no-store',headers:{Authorization:'Bearer '+token,Accept:'application/json'}});
-if(!response.ok)throw new Error('Data API: HTTP '+response.status);
+if(!response.ok){const body=await response.text();let detail='';try{const parsed=JSON.parse(body);detail=[parsed.code,parsed.message,parsed.hint].filter(Boolean).join(' · ')}catch{detail=body.slice(0,240)}throw new Error('Data API: HTTP '+response.status+(detail?' — '+detail.slice(0,320):''))}
 const rows=await response.json();if(!Array.isArray(rows))throw new Error('Resposta inesperada');
 output.textContent='Leitura autorizada pelo Neon. '+(rows.length?'Existe ao menos um registro visível.':'Nenhum registro visível (esperado para tabela vazia).')+' Nenhuma gravação realizada.';
 }catch(error){output.textContent='Teste não concluído: '+error.message+'. Nenhuma gravação realizada.'}
