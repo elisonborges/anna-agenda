@@ -275,8 +275,15 @@ const small=document.createElement('small');small.textContent=(user.email||'')+'
 // Consulta piloto isolada: não altera os campos nem os dados locais do formulário.
 const api='https://ep-broad-sound-b6rokoew.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
 const status=document.getElementById('neonPilotStatus'),results=document.getElementById('neonPilotResults');
+const retry=document.getElementById('neonPilotRetry');
+let querying=false;
 const queryAssignments=async()=>{
+if(querying)return;
+querying=true;
+if(retry){retry.disabled=true;retry.textContent='Consultando…'}
+status.textContent='Iniciando consulta segura ao Neon…';
 results.replaceChildren();
+try{
 // Neon Auth /get-session retorna um identificador de sessão opaco.
 // O endpoint /token emite o JWT assinado necessário para a Data API.
 let token;
@@ -299,8 +306,10 @@ if(!Array.isArray(rows))throw new Error('Formato de resposta inesperado');
 status.textContent=rows.length+' vínculo(s) retornado(s) pela API para a sessão atual.';
 for(const item of rows){const p=document.createElement('p');p.textContent='Turma ID: '+item.class_id+' · Disciplina ID: '+item.subject_id+' · Unidade ID: '+item.unit_id;results.append(p)}
 }catch(e){status.textContent='Consulta ainda não disponível: '+e.message+'. Nenhuma alteração foi feita no formulário.'}
+}catch(e){status.textContent='Falha inesperada na consulta: '+(e?.message||'erro desconhecido')}
+finally{querying=false;if(retry){retry.disabled=false;retry.textContent='Consultar novamente'}}
 };
-document.getElementById('neonPilotRetry')?.addEventListener('click',queryAssignments);
+retry?.addEventListener('click',event=>{event.preventDefault();queryAssignments()});
 queryAssignments();
 const exit=document.getElementById('logoutBtn');
 if(exit)exit.addEventListener('click',async()=>{
