@@ -350,7 +350,15 @@ const walk=node=>{for(const child of [...node.childNodes]){if(child.nodeType===8
 walk(template.content);return template.innerHTML;
 };
 const draftValue=id=>richDraftIds.includes(id)?safeDraftHtml(document.getElementById(id).innerHTML):document.getElementById(id).value;
-const setDraftValue=(id,value)=>{const field=document.getElementById(id);if(richDraftIds.includes(id)){const raw=String(value||'');field.innerHTML=/<[a-z][\\s\\S]*>/i.test(raw)?safeDraftHtml(raw):escapeDraft(raw).replace(/\\n/g,'<br>')}else field.value=value||''};
+const setDraftValue=(id,value)=>{
+const field=document.getElementById(id);
+if(!richDraftIds.includes(id)){field.value=value||'';return}
+let raw=String(value||'');
+if(/&lt;\/?(?:ul|ol|li|strong|b|em|i|p|div|br)\b/i.test(raw)){
+const decoder=document.createElement('textarea');decoder.innerHTML=raw;raw=decoder.value;
+}
+field.innerHTML=/<[a-z][\s\S]*>/i.test(raw)?safeDraftHtml(raw):escapeDraft(raw).replace(/\n/g,'<br>');
+};
 for(const id of richDraftIds)document.getElementById(id).addEventListener('focus',()=>{activeDraftTextId=id});
 document.querySelectorAll('#neonDraftFormatting [data-draft-format]').forEach(button=>{
 button.addEventListener('mousedown',event=>event.preventDefault());
