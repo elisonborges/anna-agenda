@@ -80,13 +80,13 @@ const getToken=async()=>{const response=await fetch(AUTH+'/token',{credentials:'
 const reviewerFromToken=token=>{const part=token.split('.')[1];const normalized=part.replace(/-/g,'+').replace(/_/g,'/');const payload=JSON.parse(atob(normalized.padEnd(Math.ceil(normalized.length/4)*4,'=')));return payload.sub};
 const loadHistory=async()=>{save.disabled=true;try{const token=await getToken();const response=await fetch(API+'/agenda_coordinator_reviews_test?select=decision,observation,created_at&entry_id=eq.'+encodeURIComponent(item.id)+'&order=created_at.desc&limit=10',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});if(!response.ok){const raw=await response.text();let detail={};try{detail=JSON.parse(raw)}catch{};throw new Error('HTTP '+response.status+(detail.code?' · '+detail.code:'')+(detail.message?' · '+detail.message.slice(0,180):''))}const entries=await response.json();save.disabled=false;save.title='';history.replaceChildren();addText(history,'strong','Histórico de decisões ('+entries.length+' mais recentes)');for(const entry of entries){const line=addText(history,'div',new Date(entry.created_at).toLocaleString('pt-BR')+' · '+entry.decision+(entry.observation?' · '+entry.observation:''));line.style.marginTop='6px'}}catch(err){history.textContent='Histórico indisponível: '+err.message+' · Registro suspenso até normalizar a consulta.';save.disabled=true;save.title='A consulta ao histórico precisa funcionar antes de registrar novas decisões.'}};
 save.addEventListener('click',async()=>{if(!check.checked){feedback.textContent='Marque a conferência antes de registrar.';return}if(decision.value==='needs_clarification'&&!observation.value.trim()){feedback.textContent='Informe a observação para solicitar esclarecimento.';return}if(!item.id){feedback.textContent='Identificador do lançamento não encontrado.';return}
-if(!confirm('Registrar esta decisão no histórico? A situação oficial do lançamento ainda não será alterada.'))return;
+if(!confirm('Confirmar decisão? Ela será registrada no histórico e atualizará a situação oficial do lançamento.'))return;
 save.disabled=true;feedback.textContent='Registrando decisão…';
 try{const token=await getToken();const reviewer=reviewerFromToken(token);if(!/^[a-f0-9-]{36}$/i.test(reviewer))throw new Error('Identificação da sessão inválida.');
-const response=await fetch(API+'/agenda_coordinator_reviews_test',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({entry_id:item.id,reviewer_user_id:reviewer,decision:decision.value,observation:observation.value.trim()})});
-if(!response.ok){const body=await response.text();throw new Error('HTTP '+response.status+' '+body.slice(0,160))}
-feedback.textContent='Decisão registrada no histórico Neon. A situação oficial permanece inalterada.';await loadHistory();
-}catch(err){feedback.textContent='Registro não concluído: '+err.message}finally{save.disabled=false}});
+const response=await fetch(API+'/rpc/register_coordinator_decision_test',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({p_entry:item.id,p_decision:decision.value,p_observation:observation.value.trim()})});
+if(!response.ok){const body=await response.text();throw new Error('HTTP '+response.status+' '+body.slice(0,240))}
+feedback.textContent='Decisão registrada e situação oficial atualizada. Atualize a lista para conferir o novo estado.';await loadHistory();
+}catch(err){feedback.textContent='Registro não concluído: '+err.message}finally{await loadHistory()}});
 loadHistory();
 card.append(review);
 results.append(card)}
