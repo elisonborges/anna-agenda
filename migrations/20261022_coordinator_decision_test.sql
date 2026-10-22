@@ -50,5 +50,5 @@ BEGIN
 END $$;
 REVOKE ALL ON FUNCTION public.register_coordinator_decision_test(uuid,text,text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.register_coordinator_decision_test(uuid,text,text) TO authenticated;
--- Após atualizar a interface, retirar INSERT direto para exigir transação atômica.
+CREATE POLICY agenda_test_teacher_review_read ON public.agenda_coordinator_reviews_test\n  FOR SELECT TO authenticated USING (EXISTS (\n    SELECT 1 FROM public.agenda_authenticated_entries_test e\n    WHERE e.id=entry_id AND e.author_user_id=agenda_security.current_user_id()\n      AND agenda_security.can_write_teacher_agenda(e.assignment_id)\n  ));\n-- O registro de decisões deve ocorrer somente pela função atômica.\nREVOKE INSERT ON public.agenda_coordinator_reviews_test FROM authenticated;
 COMMIT;
