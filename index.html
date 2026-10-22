@@ -281,7 +281,7 @@ const queryAssignments=async()=>{
 if(querying)return;
 querying=true;
 if(retry){retry.disabled=true;retry.textContent='Consultando…'}
-status.textContent='Iniciando consulta segura ao Neon…';
+status.textContent='Diagnóstico v3 · iniciando consulta segura ao Neon…';
 results.replaceChildren();
 try{
 // Neon Auth /get-session retorna um identificador de sessão opaco.
@@ -292,7 +292,13 @@ const jwtResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-sto
 if(!jwtResponse.ok)throw new Error('Emissão do JWT: HTTP '+jwtResponse.status);
 const jwtData=await jwtResponse.json();
 token=jwtData?.token||jwtData?.data?.token||jwtData?.access_token||jwtData?.data?.access_token;
-if(typeof token!=='string'||token.split('.').length!==3)throw new Error('O endpoint /token não retornou um JWT válido');
+if(typeof token!=='string'||token.split('.').length!==3)throw new Error('O endpoint /token não retornou um JWT de três partes');
+try{
+const [header,payload]=token.split('.');
+const decode=part=>JSON.parse(atob(part.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(part.length/4)*4,'=')));
+const jwtHeader=decode(header),jwtPayload=decode(payload);
+if(!jwtHeader?.alg||!jwtPayload?.sub)throw new Error('cabeçalho ou identidade ausente');
+}catch{throw new Error('O token recebido não possui codificação JWT válida; a API não foi chamada')}
 }catch(e){status.textContent='Não foi possível obter JWT do Neon Auth: '+e.message+'. Nenhum dado local foi alterado.';return}
 status.textContent='Consultando atribuições autorizadas…';
 try{
@@ -307,7 +313,7 @@ status.textContent=rows.length+' vínculo(s) retornado(s) pela API para a sessã
 for(const item of rows){const p=document.createElement('p');p.textContent='Turma ID: '+item.class_id+' · Disciplina ID: '+item.subject_id+' · Unidade ID: '+item.unit_id;results.append(p)}
 }catch(e){status.textContent='Consulta ainda não disponível: '+e.message+'. Nenhuma alteração foi feita no formulário.'}
 }catch(e){status.textContent='Falha inesperada na consulta: '+(e?.message||'erro desconhecido')}
-finally{querying=false;if(retry){retry.disabled=false;retry.textContent='Consultar novamente'}}
+finally{querying=false;if(retry){retry.disabled=false;retry.textContent='Consultar novamente · v3'}}
 };
 retry?.addEventListener('click',event=>{event.preventDefault();queryAssignments()});
 queryAssignments();
