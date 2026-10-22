@@ -494,6 +494,34 @@ loadResult.textContent=rows.length+' rascunho(s) encontrado(s). Selecione e cliq
 }catch(error){savedRows=[];savedSelect.replaceChildren();loadResult.textContent='Falha na consulta: '+error.message}
 finally{button.disabled=false}
 };
+const reviewFeedback=document.createElement('section');
+reviewFeedback.style.cssText='margin:12px 0;padding:12px;border:1px solid #cbd9e9;border-radius:9px;background:#f5f9ff';
+reviewFeedback.setAttribute('aria-live','polite');
+const reviewTitle=document.createElement('strong');reviewTitle.textContent='Devolutiva da Coordenação';
+const reviewBody=document.createElement('div');reviewBody.style.marginTop='7px';
+const reviewButton=document.createElement('button');reviewButton.type='button';reviewButton.className='secondary';reviewButton.textContent='Consultar devolutiva';reviewButton.style.marginTop='8px';
+reviewFeedback.append(reviewTitle,reviewBody,reviewButton);
+savedSelect.after(reviewFeedback);
+const showReview=async()=>{
+reviewBody.replaceChildren();
+const item=savedRows.find(row=>row.id===savedSelect.value);
+if(!item){reviewBody.textContent='Selecione um lançamento na lista.';return}
+reviewBody.textContent='Consultando histórico autorizado…';reviewButton.disabled=true;
+try{
+ const token=await getDraftToken();
+ const response=await fetch(api+'/agenda_coordinator_reviews_test?select=decision,observation,created_at&entry_id=eq.'+encodeURIComponent(item.id)+'&order=created_at.desc&limit=20',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});
+ if(!response.ok)throw new Error(await readNeonError(response));
+ const reviews=await response.json();reviewBody.replaceChildren();
+ const state=document.createElement('p');state.textContent='Situação oficial: '+item.status;reviewBody.append(state);
+ if(!reviews.length){const p=document.createElement('p');p.textContent='Nenhuma devolutiva registrada.';reviewBody.append(p)}
+ for(const review of reviews){
+  const p=document.createElement('p');p.style.margin='7px 0';p.textContent=new Date(review.created_at).toLocaleString('pt-BR')+' · '+review.decision+(review.observation?' · '+review.observation:'');reviewBody.append(p);
+ }
+}catch(error){reviewBody.textContent='Não foi possível consultar a devolutiva: '+error.message}
+finally{reviewButton.disabled=false}
+};
+reviewButton.onclick=showReview;
+savedSelect.addEventListener('change',()=>{reviewBody.textContent='Clique em Consultar devolutiva para ver as decisões deste lançamento.'});
 document.getElementById('neonOpenTest').onclick=()=>{
 const item=savedRows.find(row=>row.id===savedSelect.value);
 if(!item){loadResult.textContent='Selecione um rascunho da lista.';return}
