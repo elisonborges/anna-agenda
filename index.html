@@ -279,7 +279,12 @@ const queryAssignments=async()=>{
 results.replaceChildren();
 const session=data?.session||data?.data?.session;
 const token=session?.access_token||session?.accessToken||session?.token;
-if(!token){status.textContent='Sessão válida, mas sem token de acesso disponível nesta resposta. A consulta segura depende da integração de tokens do Neon Auth.';return}
+if(!token){status.textContent='Sessão válida, mas nenhum token de acesso foi disponibilizado. Precisamos obter um JWT compatível com a Data API.';return}
+const parts=typeof token==='string'?token.split('.'):[];
+if(parts.length!==3||parts.some(part=>!part)||parts.some(part=>!/^[A-Za-z0-9_-]+$/.test(part))){
+status.textContent='Diagnóstico: o Neon Auth retornou um token de sessão opaco, não um JWT. A consulta foi interrompida antes de chamar a Data API. É necessário configurar a emissão de JWT para essa integração.';
+return;
+}
 status.textContent='Consultando atribuições autorizadas…';
 try{
 const response=await fetch(api+'/teacher_class_assignments?select=class_id,subject_id,unit_id,active&active=eq.true',{headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});
