@@ -10,7 +10,7 @@ const btn=document.getElementById('accept'),status=document.getElementById('stat
 const token=new URLSearchParams(location.search).get('token');
 const valid=typeof token==='string'&&/^[0-9a-f]{64}$/.test(token);
 function message(text){status.textContent=text;}
-function goLogin(){const next=new URL('aceitar-convite.html',location.href);const login=new URL('login.html',location.href);login.searchParams.set('next',next.pathname+next.search);location.assign(login.href);}
+function goLogin(){const next=new URL('aceitar-convite.html',location.href);const login=new URL('../login.html',location.href);login.searchParams.set('next',next.pathname+next.search);location.assign(login.href);}
 async function getJWT(){
  const sr=await fetch(AUTH+'/get-session',{credentials:'include',cache:'no-store'});
  if(!sr.ok)return null;
@@ -26,7 +26,7 @@ let jwt=null;
 (async()=>{try{jwt=await getJWT();if(!jwt){message('Entre na sua conta e confirme seu e-mail para continuar.');btn.textContent='Entrar na AnnA Agenda';btn.dataset.mode='login';}else{message('Sessão confirmada. Clique para aceitar o convite.');}btn.disabled=false;}catch{message('Não foi possível verificar sua sessão. Entre novamente.');btn.textContent='Entrar na AnnA Agenda';btn.dataset.mode='login';btn.disabled=false;}})();
 btn.addEventListener('click',async()=>{
  if(btn.dataset.mode==='login'){goLogin();return;}
- if(btn.dataset.mode==='done'){location.assign('login.html');return;}
+ if(btn.dataset.mode==='done'){location.assign('../login.html');return;}
  btn.disabled=true;message('Validando e ativando convite…');
  try{
   jwt=await getJWT();
