@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>AnnA Agenda | Administração</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:#21324b;background:#f2f5fa}*{box-sizing:border-box}body{margin:0}header{background:#172b50;color:white;padding:22px max(20px,calc((100vw - 1080px)/2))}header small{color:#b9c9e7}header h1{margin:5px 0;font-size:26px}main{max-width:1080px;margin:28px auto;padding:0 20px}.notice{background:#fff4da;border:1px solid #edcb77;color:#694a12;border-radius:12px;padding:13px 16px;margin-bottom:22px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.panel{background:white;border:1px solid #dfe6f0;border-radius:16px;padding:24px;box-shadow:0 4px 16px #132b4a0a}h2{font-size:19px;margin:0 0 16px}label{display:block;font-size:13px;font-weight:650;margin:15px 0 6px}input,select{width:100%;border:1px solid #bbc9d9;border-radius:9px;padding:11px;font:inherit;background:white}button{background:#315bb7;border:0;border-radius:9px;color:white;padding:12px 17px;font:inherit;font-weight:650;cursor:pointer;margin-top:19px}button:disabled{background:#8996aa;cursor:not-allowed}.muted{font-size:13px;color:#64748b;line-height:1.6}.roles{display:flex;gap:9px;flex-wrap:wrap}.pill{background:#eaf0fc;border-radius:20px;padding:7px 11px;font-size:13px}table{width:100%;border-collapse:collapse;text-align:left}td,th{border-bottom:1px solid #e7edf5;padding:12px 6px;font-size:14px}th{color:#52627b}.wide{grid-column:1/-1}.tag{display:inline-block;background:#edf2fa;color:#31527e;border-radius:6px;padding:3px 7px;font-size:12px}@media(max-width:720px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}} </style></head>
+<body><header><small>AnnA One / Agenda Educacional</small><h1>Administração</h1><div>Gestão institucional de usuários e permissões</div></header>
+<main><div class="notice" id="connectionStatus" role="status"><strong>Conexão Neon:</strong> verificando sessão institucional…</div>
+<div class="grid">
+<section class="panel"><h2>Cadastro de usuário</h2><form id="cadastro"><label for="nome">Nome completo</label><input id="nome" autocomplete="name" placeholder="Nome do profissional" required><label for="email">E-mail institucional</label><input id="email" type="email" autocomplete="off" placeholder="usuario@instituicao.edu.br" required><label for="instituicao">Instituição</label><select id="instituicao" required><option value="">Selecione uma instituição</option><option value="demo">Instituição demonstrativa (somente exemplo)</option></select><label for="perfil">Perfil de acesso</label><select id="perfil" required><option value="">Selecione o perfil</option><option>Professor</option><option>Coordenação</option><option>Revisora IA</option><option>Reprografia</option><option>Administrador</option></select><button type="submit" disabled title="Aguardando integração autenticada">Cadastrar usuário (indisponível)</button><p class="muted">O cadastro definitivo deverá ser feito por administrador autenticado, com autorização no servidor e registro de auditoria. Nunca por chaves administrativas expostas no navegador.</p></form></section>
+<section class="panel"><h2>Controle de acesso</h2><div class="roles"><span class="pill">Professor</span><span class="pill">Coordenação</span><span class="pill">Revisora IA</span><span class="pill">Reprografia</span><span class="pill">Administrador</span></div><p>O administrador poderá cadastrar profissionais, vincular instituições, conceder ou revogar perfis e desativar acessos.</p><p class="muted">Regras previstas: instituição obrigatória; permissões mínimas; alterações auditáveis; proibição de autoatribuição do perfil Administrador; convite/ativação sem divulgação de senhas.</p><h2 style="margin-top:26px">Status da integração</h2><p><span class="tag">Pendente</span> Autenticação de administrador</p><p><span class="tag">Pendente</span> Serviço seguro de provisionamento Neon</p><p><span class="tag">Pendente</span> Listagem, edição e revogação de usuários</p></section>
+<section class="panel wide"><h2>Usuários da instituição</h2><table><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Situação</th></tr></thead><tbody><tr><td colspan="4" class="muted">Aguardando autenticação institucional…</td></tr></tbody></table></section></div>
+<p class="muted">Módulo Administração · v0.1 · protótipo de interface · branch isolada · sem publicação em produção.</p></main><script>
+(()=>{'use strict';
+const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const API='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
+const status=document.getElementById('connectionStatus'),body=document.querySelector('tbody'),institution=document.getElementById('instituicao');
+const say=(msg)=>{status.textContent=msg};
+const request=async(url,token)=>{const res=await fetch(url,{credentials:'omit',headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});if(!res.ok)throw Error('Consulta recusada pelo Neon (HTTP '+res.status+').');return res.json()};
+async function init(){try{
+const sessionResponse=await fetch(AUTH+'/get-session',{credentials:'include',cache:'no-store'});if(!sessionResponse.ok)throw Error('Entre primeiro pelo login institucional.');
+const session=await sessionResponse.json(),user=session?.user||session?.data?.user;
+if(!user?.id)throw Error('Sessão não encontrada. Entre pelo login institucional.');
+const tokenResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store'});if(!tokenResponse.ok)throw Error('Sessão expirada.');
+const tokenData=await tokenResponse.json(),token=tokenData?.token||tokenData?.data?.token||tokenData?.access_token||tokenData?.data?.access_token;
+if(typeof token!=='string'||token.split('.').length!==3)throw Error('Token institucional inválido.');
+const memberships=await request(API+'/institution_memberships?select=institution_id,role,active&user_id=eq.'+encodeURIComponent(user.id)+'&active=eq.true',token);
+const adminRoles=['admin','administrador','institution_admin','institution_owner','owner'];
+const allowed=memberships.filter(m=>adminRoles.includes(String(m.role).toLowerCase()));
+if(!allowed.length)throw Error('Acesso negado: conta sem perfil de Administrador institucional.');
+const ids=allowed.map(m=>m.institution_id);
+const institutions=await request(API+'/institutions?select=id,name,active&id=in.('+ids.map(encodeURIComponent).join(',')+')&active=eq.true',token);
+institution.replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecione uma instituição';institution.append(placeholder);
+for(const inst of institutions){const opt=document.createElement('option');opt.value=inst.id;opt.textContent=inst.name;institution.append(opt)}
+body.replaceChildren();const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=4;cell.className='muted';cell.textContent='Conexão autenticada. A listagem de usuários ainda depende de revisão das políticas e do serviço administrativo seguro.';row.append(cell);body.append(row);
+say('Conectado ao Neon de testes. Administrador autorizado para '+institutions.length+' instituição(ões). Cadastro e alterações permanecem desativados.');
+}catch(e){say('Administração bloqueada: '+e.message);document.querySelector('.grid').hidden=true;}}
+init();
+})();
+</script></body></html>
