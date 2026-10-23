@@ -42,7 +42,7 @@ const params=new URLSearchParams(location.search),resetToken=params.get('token')
 if(resetToken){document.getElementById('reset-details').open=true;document.getElementById('reset-confirm').hidden=false;resetMessage('Defina uma nova senha para concluir a recuperação.');}
 sendReset.addEventListener('click',async()=>{
 const email=(resetEmail.value||document.getElementById('email').value).trim();if(!email){resetMessage('Informe seu e-mail.');return}resetEmail.value=email;sendReset.disabled=true;resetMessage('Solicitando recuperação…');
-try{const redirectTo=new URL('login.html',location.href);redirectTo.search='?recuperar=1';await request('/request-password-reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,redirectTo:redirectTo.href})});resetMessage('Se a conta puder receber recuperação, o Neon Auth enviará um link por e-mail. Confira também o spam.');}
+try{const redirectTo=new URL('reset-senha.html',location.href);await request('/request-password-reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,redirectTo:redirectTo.href})});resetMessage('Se a conta puder receber recuperação, o Neon Auth enviará um link por e-mail. Confira também o spam.');}
 catch(err){resetMessage('Não foi possível solicitar a recuperação: '+err.message)}
 finally{sendReset.disabled=false}
 });
