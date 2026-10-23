@@ -84,6 +84,11 @@ if(!destination){
   if(response.ok){const memberships=await response.json();if(Array.isArray(memberships)&&memberships.length){destination=page;break}}
  }
 }
+if(!destination){
+ const currentUser=session?.user?.id||session?.data?.user?.id;
+ const adminResponse=await fetch(api+'/institution_memberships?select=role&user_id=eq.'+encodeURIComponent(currentUser)+'&active=eq.true&limit=20',{headers:{Authorization:'Bearer '+jwt,Accept:'application/json'},cache:'no-store'});
+ if(adminResponse.ok){const memberships=await adminResponse.json();if(Array.isArray(memberships)&&memberships.some(m=>['institution_admin','admin','administrador','institution_owner','owner'].includes(m.role)))destination='administracao/';}
+}
 if(!destination){message('Sua conta está autenticada, mas não possui perfil institucional ativo.');return}
 message('Perfil identificado. Abrindo ambiente…');
 location.assign(destination);
