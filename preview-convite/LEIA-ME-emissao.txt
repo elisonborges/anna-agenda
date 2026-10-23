@@ -1,0 +1,1 @@
+Emissão de convites: integração pendente. O aceite de convites está validado; não publicar a emissão como funcional antes de disponibilizar a API isolada e testar.
