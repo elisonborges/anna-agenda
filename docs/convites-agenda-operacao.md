@@ -1,0 +1,13 @@
+# Operação segura — checklist de implantação (não executar automaticamente)
+- [ ] Confirmar domínio e remetente Resend verificados; agenda@annaone.com.br é apenas candidato.
+- [ ] Confirmar serviço que hospeda endpoints Deno e permissões de secrets.
+- [ ] Confirmar Neon URL exclusivamente da branch de testes.
+- [ ] Configurar CORS restrito e rate limiting distribuído no gateway.
+- [ ] Verificar assinatura, emissor, audiência e expiração do JWT.
+- [ ] Cadastrar MASTER somente com autorização explícita.
+- [ ] Testar prova de posse do e-mail no Neon Auth.
+- [ ] Validar que signup não permite autoelevação de privilégio.
+- [ ] Garantir convite de uso único com transação e auditoria.
+- [ ] Garantir que falha de e-mail não pareça sucesso.
+- [ ] Testar expiração, revogação, concorrência e regressões.
+- [ ] Solicitar aprovação antes de publicar.
