@@ -64,6 +64,7 @@ const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon
 const API='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
 const status=document.getElementById('status'),workspace=document.getElementById('workspace'),account=document.getElementById('account'),logout=document.getElementById('logout');
 function setupPanels(){for(const [buttonId,panelId,label] of [['toggle-search','search-panel','Pesquisar escolas'],['toggle-school','school-panel','Cadastrar escola'],['toggle-admin','admin-panel','Adicionar ADM']]){const button=document.getElementById(buttonId),panel=document.getElementById(panelId);button.addEventListener('click',()=>{panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden));button.textContent=(panel.hidden?'▸ ':'▾ ')+label;});}document.getElementById('search-clear').addEventListener('click',()=>{for(const id of ['search-name','search-city','search-state'])document.getElementById(id).value='';document.getElementById('search-feedback').textContent='Filtros limpos.';});}
+for(const uf of 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ')){const option=document.createElement('option');option.value=uf;option.textContent=uf;document.getElementById('state').append(option)}
 setupPanels();
 let schools=[];let currentJwt=null;let selectedSchoolId=null;
 const schoolList=document.getElementById('school-list');
