@@ -142,5 +142,7 @@ lastRows=rows;window.dispatchEvent(new CustomEvent('anna:coord-neon-loaded',{det
 }catch(e){status.textContent='Consulta não concluída: '+e.message}
 finally{button.disabled=false}
 });
+// Carrega os lançamentos autorizados automaticamente ao abrir a Coordenação.
+button.click();
 })();
 </script><script>(function(){const auth="https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth";const email=document.getElementById("coord-auth-email");fetch(auth+"/get-session",{credentials:"include",cache:"no-store"}).then(r=>r.ok?r.json():null).then(data=>{const u=data?.user||data?.data?.user;if(u?.email&&email)email.textContent=u.email}).catch(()=>{});document.getElementById("coord-logout")?.addEventListener("click",async function(){this.disabled=true;try{await fetch(auth+"/sign-out",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:"{}"})}catch(e){}location.href="login.html"})})();</script></body></html>
