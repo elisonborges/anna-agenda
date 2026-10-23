@@ -1,21 +1,40 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="theme-color" content="#0c2646"><title>AnnA Agenda | Ativar acesso</title><link rel="icon" href="assets/anna-symbol.svg" type="image/svg+xml"><style>
 :root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#0c2146;background:#f5f9ff}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;flex-direction:column}header{background:#0c2646;color:#fff;padding:11px max(20px,5vw);display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}.brand img{width:46px;height:46px}.brand b{font-size:24px}.brand b span{color:#198dff}.brand small{display:block;font-size:10px;color:#dcecff}.brand em{display:block;font-size:12px;font-style:normal;margin-top:4px}.back{border:1px solid #7897ba;border-radius:9px;padding:10px 15px;color:white;text-decoration:none;font-size:13px;font-weight:700}main{flex:1;display:flex;align-items:center;justify-content:center;padding:35px 16px}.panel{background:white;border:1px solid #dce7f2;border-radius:18px;padding:30px;width:min(100%,510px);box-shadow:0 12px 30px #123a6a13}h1{font-size:27px;margin:0 0 12px}.muted{font-size:14px;line-height:1.6;color:#526981}.notice{padding:13px;background:#eef6ff;border-left:4px solid #086cf3;border-radius:8px;font-size:13px;line-height:1.5;margin:20px 0}label{display:block;font-size:13px;font-weight:700;margin:16px 0 6px}input{width:100%;border:1px solid #cbd9e9;border-radius:10px;padding:12px;font:inherit;background:#f4f7fb}button{width:100%;margin-top:20px;border:0;border-radius:11px;padding:13px;background:#8799b1;color:#fff;font:inherit;font-weight:750;cursor:not-allowed}footer{text-align:center;color:#63758a;font-size:11px;padding:15px}footer div{margin-top:3px}</style></head><body><header><a class="brand" href="login.html"><img src="assets/anna-symbol.svg" alt="Símbolo AnnA One"><div><b>AnnA <span>One</span></b><small>Tecnologia e Educação Juntas</small><em>Agenda Educacional · Ativação de acesso</em></div></a><a class="back" href="login.html">← Voltar</a></header><main><section class="panel"><h1>Ative seu acesso</h1><p class="muted">O acesso será liberado somente após a validação do convite individual e a confirmação do seu e-mail.</p><div class="notice" role="status"><strong id="invite-title">Verificando link.</strong> <span id="invite-message">A ativação permanece indisponível enquanto a validação no servidor não estiver conectada.</span></div><form><fieldset disabled style="border:0;padding:0;margin:0"><label for="email">E-mail convidado</label><input id="email" type="email" autocomplete="email" placeholder="Será identificado pelo convite"><label for="senha">Crie sua senha</label><input id="senha" type="password" autocomplete="new-password" minlength="8"><label for="confirmar">Confirme sua senha</label><input id="confirmar" type="password" autocomplete="new-password" minlength="8"><button type="button" disabled>Ativar minha conta</button></fieldset></form><p class="muted">Já possui acesso? <a href="login.html">Entrar na Agenda</a>. Esqueceu sua senha? Utilize a recuperação no login.</p></section></main><footer>© 2026 AnnA One. Todos os direitos reservados.<div>Desenvolvido por Prof. Elison Borges · Projeto e desenvolvimento original.</div></footer><script>
-(function(){
+(async function(){
  const title=document.getElementById("invite-title");
  const message=document.getElementById("invite-message");
- const params=new URLSearchParams(location.search);
- const tokens=params.getAll("convite");
- // Evitar que o token permaneça no histórico e seja transmitido em navegação.
+ const tokens=new URLSearchParams(location.search).getAll("convite");
  if(location.search)history.replaceState(null,"",location.pathname+location.hash);
  if(tokens.length!==1||!/^[0-9a-f]{64}$/.test(tokens[0])){
   title.textContent="Link inválido.";
   message.textContent="Solicite um novo convite ao responsável pela instituição.";
   return;
  }
- // O formato correto não comprova validade, expiração nem identidade.
- // Não enviar o token a serviços externos até existir endpoint de validação.
- title.textContent="Convite identificado.";
- message.textContent="O link possui o formato esperado. A confirmação de validade e a criação de senha ainda aguardam integração segura com o servidor.";
+ // Preencher somente depois de implantar e testar o endpoint em HTTPS.
+ // Nunca usar URL recebida do convite ou de parâmetros externos.
+ const VALIDATION_ENDPOINT="";
+ if(!VALIDATION_ENDPOINT){
+  title.textContent="Convite identificado.";
+  message.textContent="A consulta segura ainda não está disponível. A ativação permanece bloqueada.";
+  return;
+ }
+ try{
+  const endpoint=new URL(VALIDATION_ENDPOINT);
+  if(endpoint.protocol!=="https:")throw Error("Configuração insegura");
+  const response=await fetch(endpoint.href,{
+   method:"POST",mode:"cors",cache:"no-store",referrerPolicy:"no-referrer",
+   headers:{"Content-Type":"application/json"},body:JSON.stringify({token:tokens[0]})
+  });
+  if(!response.ok)throw Error("Serviço indisponível");
+  const result=await response.json();
+  title.textContent=result.valid===true?"Convite válido.":"Convite inválido ou expirado.";
+  message.textContent=result.valid===true
+   ?"O convite está pendente. A criação da conta será liberada após integração com o Neon Auth."
+   :"Solicite um novo convite ao responsável pela instituição.";
+ }catch{
+  title.textContent="Não foi possível validar.";
+  message.textContent="Tente novamente mais tarde. Nenhum acesso foi ativado.";
+ }
 })();
 </script></body></html>
