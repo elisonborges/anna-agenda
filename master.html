@@ -74,8 +74,8 @@ if(user.emailVerified!==true)throw Error('E-mail não verificado.');
 const tokenResponse=await getJson(AUTH+'/token',{credentials:'include'});
 const jwt=tokenResponse?.token||tokenResponse?.data?.token||tokenResponse?.access_token||tokenResponse?.data?.access_token;
 if(typeof jwt!=='string'||jwt.split('.').length!==3)throw Error('Token de acesso indisponível.');
-const result=await getJson(API+'/agenda_master_memberships?select=user_id,active&user_id=eq.'+encodeURIComponent(user.id)+'&active=eq.true&limit=1',{headers:{Authorization:'Bearer '+jwt,Accept:'application/json'}});
-if(!Array.isArray(result)||result.length!==1)throw Error('Perfil Master não autorizado ou não disponível pela política de acesso.');
+const result=await getJson(API+'/rpc/agenda_is_master',{method:'POST',headers:{Authorization:'Bearer '+jwt,Accept:'application/json','Content-Type':'application/json'},body:'{}'});
+if(result!==true)throw Error('Perfil Master não autorizado ou não disponível pela política de acesso.');
 account.textContent=user.email;workspace.hidden=false;logout.hidden=false;status.textContent='Master autenticado. Interface inicial disponível; cadastro ainda não habilitado.';
 }catch(e){fail('Acesso Master bloqueado: '+e.message)}
 }
