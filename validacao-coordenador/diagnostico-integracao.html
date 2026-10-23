@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AnnA Agenda — Diagnóstico de integração (isolado)</title>
+<style>:root{font-family:system-ui,Arial;color:#20354d;background:#eef3f8}*{box-sizing:border-box}body{max-width:950px;margin:30px auto;padding:16px}main{background:white;border:1px solid #d1ddec;border-radius:12px;padding:24px}h1{font-size:24px}button,a{font:inherit}button{padding:11px 18px;border:0;border-radius:8px;background:#1263ed;color:white;cursor:pointer}button:disabled{opacity:.5}section{padding:12px 0;border-bottom:1px solid #e3eaf2}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f7fc;padding:12px;border-radius:8px}small{color:#546b80}</style></head>
+<body><main><h1>Diagnóstico de integração — ambiente isolado</h1><p>Verificação autenticada e somente leitura. Não cria, altera ou exclui registros. Não substitui a validação funcional com uma conta de teste.</p><button id="run">Verificar integração</button> <a href="./login.html">Login</a><p id="status" role="status">Aguardando verificação.</p><div id="results" aria-live="polite"></div></main>
+<script>
+(()=>{'use strict';
+const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const API='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
+const btn=document.getElementById('run'),status=document.getElementById('status'),results=document.getElementById('results');
+function report(title,description,ok){const s=document.createElement('section'),h=document.createElement('strong'),p=document.createElement('p');h.textContent=(ok?'✓ ':'! ')+title;p.textContent=description;s.append(h,p);results.append(s)}
+async function json(url,options={}){const r=await fetch(url,{credentials:'include',cache:'no-store',...options});if(!r.ok)throw new Error('HTTP '+r.status+' em '+new URL(url).pathname);return r.json()}
+btn.addEventListener('click',async()=>{btn.disabled=true;results.replaceChildren();status.textContent='Verificando sessão e vínculos…';
+try{
+const session=await json(AUTH+'/get-session');const user=session?.user||session?.data?.user;
+if(!user?.id)throw new Error('Não há sessão autenticada. Entre pelo Login e tente novamente.');
+report('Autenticação','Sessão autenticada identificada.',true);
+const t=await json(AUTH+'/token');const token=t?.token||t?.data?.token||t?.access_token||t?.data?.access_token;
+if(!token)throw new Error('Token de acesso indisponível');
+const headers={Authorization:'Bearer '+token,Accept:'application/json'};
+const read=(table,query)=>json(API+'/'+table+'?'+query,{headers});
+const memberships=await read('institution_memberships','select=id,institution_id,role,active&user_id=eq.'+encodeURIComponent(user.id)+'&active=eq.true&limit=100');
+report('Vínculos institucionais',memberships.length+' vínculo(s) ativo(s). Papéis: '+([...new Set(memberships.map(x=>x.role))].join(', ')||'nenhum'),memberships.length>0);
+const ids=new Set(memberships.map(x=>x.id)),institutions=new Set(memberships.map(x=>x.institution_id));
+if(!ids.size){status.textContent='Verificação parcial: usuário sem vínculo institucional.';return}
+const assignments=await read('teacher_class_assignments','select=id,institution_id,unit_id,class_id,subject_id,institution_membership_id,active&active=eq.true&limit=1000');
+const mine=assignments.filter(x=>ids.has(x.institution_membership_id)&&institutions.has(x.institution_id));
+report('Atribuições do professor',mine.length+' atribuição(ões) ativas relacionadas ao usuário.',mine.length>0);
+const [classes,subjects,units]=await Promise.all([read('school_classes','select=id,institution_id,unit_id,active&limit=1000'),read('school_subjects','select=id,institution_id,active&limit=1000'),read('school_units','select=id,institution_id,active&limit=1000')]);
+const cm=new Map(classes.map(x=>[x.id,x])),sm=new Map(subjects.map(x=>[x.id,x])),um=new Map(units.map(x=>[x.id,x]));
+const invalid=mine.filter(x=>!cm.get(x.class_id)?.active||!sm.get(x.subject_id)?.active||!um.get(x.unit_id)?.active||cm.get(x.class_id)?.institution_id!==x.institution_id||sm.get(x.subject_id)?.institution_id!==x.institution_id||um.get(x.unit_id)?.institution_id!==x.institution_id||cm.get(x.class_id)?.unit_id!==x.unit_id);
+report('Integridade de atribuições',invalid.length?'Encontradas '+invalid.length+' atribuições com referências inconsistentes.':'Nenhuma inconsistência encontrada nas atribuições retornadas.',invalid.length===0);
+const entries=await read('agenda_authenticated_entries_test','select=id,assignment_id,author_user_id,agenda_date,status&author_user_id=eq.'+encodeURIComponent(user.id)+'&limit=1000');
+const ownedAssignments=new Set(mine.map(x=>x.id));const mismatches=entries.filter(x=>!ownedAssignments.has(x.assignment_id));
+report('Agendas autenticadas',entries.length+' registro(s) do usuário; '+mismatches.length+' sem atribuição ativa correspondente na consulta.',mismatches.length===0);
+const coordinator=memberships.some(x=>['coordinator','coordenador','admin','administrator'].includes(String(x.role).toLowerCase()));
+report('Perfil de Coordenação',coordinator?'Perfil ativo encontrado; a autorização efetiva das operações ainda exige testes de RLS.':'Usuário sem perfil ativo de Coordenação.',coordinator);
+status.textContent='Verificação somente leitura concluída. Resultados limitados às linhas permitidas pelo Neon e ao máximo de 1.000 por consulta.';
+}catch(err){report('Verificação interrompida',err.message,false);status.textContent='Não foi possível concluir todas as consultas.'}finally{btn.disabled=false}});
+})();
+</script></body></html>
