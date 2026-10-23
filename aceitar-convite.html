@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>AnnA Agenda | Aceitar convite</title>
+<style>body{margin:0;background:#eef6ff;color:#0c2646;font:16px system-ui,Arial}header{background:#0c2646;color:white;padding:20px;text-align:center;font-size:22px;font-weight:750}main{max-width:470px;margin:55px auto;padding:28px;background:white;border:1px solid #d7e5f2;border-radius:16px;box-shadow:0 10px 35px #163e6720}h1{font-size:25px}p{line-height:1.55}button{display:block;width:100%;border:0;border-radius:10px;background:#086cf3;color:white;font:700 15px system-ui;padding:14px;cursor:pointer}button:disabled{opacity:.6}#status{margin-top:18px;font-size:14px}small{color:#526981}</style></head>
+<body><header>AnnA One · Agenda Educacional</header><main><h1>Convite institucional</h1><p>Confirme seu acesso para ativar a administração da instituição.</p><button id="accept" type="button" disabled>Aceitar convite</button><p id="status" role="status">Verificando sua sessão…</p><p><small>O convite é individual, de uso único e exige e-mail verificado.</small></p></main>
+<script>
+(()=>{'use strict';
+const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const API='https://tnvghprwltbziivlxeod.supabase.co/functions/v1/anna-agenda-aceitar-convite-test';
+const btn=document.getElementById('accept'),status=document.getElementById('status');
+const token=new URLSearchParams(location.search).get('token');
+const valid=typeof token==='string'&&/^[0-9a-f]{64}$/.test(token);
+function message(text){status.textContent=text;}
+function goLogin(){const next=new URL('aceitar-convite.html',location.href);const login=new URL('login.html',location.href);login.searchParams.set('next',next.pathname+next.search);location.assign(login.href);}
+async function getJWT(){
+ const sr=await fetch(AUTH+'/get-session',{credentials:'include',cache:'no-store'});
+ if(!sr.ok)return null;
+ const session=await sr.json();
+ if(!session?.user?.id&&!session?.data?.user?.id)return null;
+ const r=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store',headers:{Accept:'application/json'}});
+ if(!r.ok)return null;
+ const data=await r.json();
+ return data?.token||data?.data?.token||data?.access_token||data?.data?.access_token||null;
+}
+if(!valid){message('Convite ausente ou inválido. Solicite um novo convite.');return;}
+let jwt=null;
+(async()=>{try{jwt=await getJWT();if(!jwt){message('Entre na sua conta e confirme seu e-mail para continuar.');btn.textContent='Entrar na AnnA Agenda';btn.dataset.mode='login';}else{message('Sessão confirmada. Clique para aceitar o convite.');}btn.disabled=false;}catch{message('Não foi possível verificar sua sessão. Entre novamente.');btn.textContent='Entrar na AnnA Agenda';btn.dataset.mode='login';btn.disabled=false;}})();
+btn.addEventListener('click',async()=>{
+ if(btn.dataset.mode==='login'){goLogin();return;}
+ if(btn.dataset.mode==='done'){location.assign('login.html');return;}
+ btn.disabled=true;message('Validando e ativando convite…');
+ try{
+  jwt=await getJWT();
+  if(!jwt){message('Sessão expirada. Entre novamente.');btn.dataset.mode='login';btn.textContent='Entrar na AnnA Agenda';return;}
+  const r=await fetch(API,{method:'POST',headers:{Authorization:'Bearer '+jwt,'Content-Type':'application/json'},body:JSON.stringify({token}),cache:'no-store',referrerPolicy:'no-referrer'});
+  const result=await r.json().catch(()=>({}));
+  if(!r.ok||result.ok!==true){
+   message(r.status===401?'Sua sessão expirou. Entre novamente.':r.status===403?'Convite inválido, expirado, já utilizado ou e-mail não verificado.':'Não foi possível concluir o aceite. Tente novamente.');
+   if(r.status===401){btn.dataset.mode='login';btn.textContent='Entrar na AnnA Agenda';}
+   return;
+  }
+  history.replaceState(null,'',location.pathname);
+  message('Convite aceito! Seu acesso institucional foi ativado.');btn.textContent='Abrir minha instituição';btn.dataset.mode='done';
+ }catch{message('Falha de conexão. Tente novamente.');}
+ finally{btn.disabled=false;}
+});
+})();
+</script></body></html>
