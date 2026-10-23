@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0c2646"><meta name="referrer" content="no-referrer">
+<title>AnnA Agenda | Painel Master</title>
+<link rel="icon" href="assets/anna-symbol.svg" type="image/svg+xml">
+<style>
+:root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#0c2146;background:#f5f9ff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;flex-direction:column}
+header{background:#0c2646;color:white;padding:12px max(18px,calc((100vw - 1440px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;color:white;text-decoration:none}.brand img{width:49px;height:49px;object-fit:contain}
+.brand b{font-size:24px;letter-spacing:-.8px}.brand b span{color:#198dff}.brand small{display:block;font-size:10px;color:#dcecff;margin-top:2px}.product{font-size:12px;color:#e3f0ff;font-weight:650;margin-top:4px}
+.header-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.account{font-size:12px;color:#dcecff}
+button,.nav-link{font:inherit;border:0;border-radius:9px;padding:10px 15px;font-weight:700;cursor:pointer}
+.nav-link{color:white;border:1px solid #7897ba;text-decoration:none;font-size:13px;background:transparent}
+main{width:100%;max-width:1440px;margin:0 auto;flex:1;padding:25px 20px 36px}
+.eyebrow{font-size:11px;letter-spacing:1.5px;color:#0870ca;text-transform:uppercase;font-weight:800}
+h1{font-size:29px;letter-spacing:-.6px;margin:7px 0 6px}.subtitle{font-size:14px;color:#526981;margin:0 0 20px}
+.status{border:1px solid #c7defa;border-left:4px solid #086cf3;background:#eef6ff;color:#214669;border-radius:10px;padding:12px 15px;font-size:13px;margin-bottom:18px}
+.status.error{background:#fff0f0;border-color:#eab1b1;border-left-color:#d92d20;color:#8a1c13}
+.workspace{display:grid;grid-template-columns:minmax(280px,.95fr) minmax(360px,1.3fr);gap:18px;align-items:start}
+.panel{background:white;border:1px solid #dce7f2;border-radius:17px;box-shadow:0 9px 28px #123a6a12;padding:22px;min-width:0}
+.panel h2{font-size:19px;margin:0 0 7px}.hint{font-size:12px;color:#63758a;line-height:1.5;margin:0 0 15px}
+.toolbar{display:flex;gap:8px;margin-bottom:12px}.toolbar input{flex:1;min-width:0}
+label{display:block;font-size:13px;font-weight:700;margin:13px 0 5px}
+input,select,textarea{font:inherit;width:100%;padding:11px 12px;border:1px solid #cbd9e9;border-radius:9px;background:#f4f7fb;color:#0c2146}
+input:disabled,textarea:disabled,select:disabled{opacity:.75}
+textarea{min-height:90px;resize:vertical}.school-list{border:1px solid #dce7f2;border-radius:10px;min-height:350px;padding:14px;background:#f8fbff}
+.empty{text-align:center;color:#667b91;font-size:13px;padding:60px 12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.primary{background:#086cf3;color:white}.secondary{background:#eaf0ff;color:#164a85}.danger{background:#fff0f0;color:#a02721}
+button:disabled{opacity:.55;cursor:not-allowed}.note{font-size:12px;color:#526981;background:#eef6ff;padding:12px;border-radius:9px;line-height:1.55;margin-top:16px}
+footer{text-align:center;color:#63758a;font-size:11px;padding:13px 16px;border-top:1px solid #e2eaf4}footer div{margin-top:3px}
+[hidden]{display:none!important}
+@media(max-width:850px){.workspace{grid-template-columns:1fr}.school-list{min-height:180px}.empty{padding:30px 12px}}
+@media(max-width:480px){main{padding:18px 12px}.panel{padding:17px}.row{grid-template-columns:1fr}h1{font-size:25px}.brand img{width:43px;height:43px}.brand b{font-size:21px}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="https://elisonborges.github.io/anna-one/" aria-label="AnnA One"><img src="assets/anna-symbol.svg" alt="Símbolo oficial AnnA One"><div><b>AnnA <span>One</span></b><small>Tecnologia e Educação Juntas</small><div class="product">Agenda Educacional · Painel Master</div></div></a>
+<div class="header-actions"><span class="account" id="account">Verificando acesso…</span><a class="nav-link" href="login.html">← Login</a><button class="nav-link" id="logout" type="button" hidden>Sair</button></div>
+</header>
+<main>
+<div class="eyebrow">AnnA One · Agenda Educacional</div><h1>Painel Master</h1><p class="subtitle">Gerenciamento das instituições escolares e configuração inicial do ambiente.</p>
+<div class="status" id="status" role="status" aria-live="polite">Verificando sua sessão e permissão Master…</div>
+<div class="workspace" id="workspace" hidden>
+<section class="panel"><h2>Escolas cadastradas</h2><p class="hint">Selecione uma instituição para visualizar seus dados.</p><div class="toolbar"><input type="search" placeholder="Buscar escola" aria-label="Buscar escola" disabled></div><div class="school-list"><div class="empty">A listagem será ativada após a integração autenticada com o Neon.</div></div><div class="actions"><button class="secondary" type="button" disabled>Atualizar</button></div></section>
+<section class="panel"><h2>Cadastro da escola</h2><p class="hint">Estrutura inicial para o cadastro da escola fictícia de teste.</p>
+<form id="school-form"><label for="name">Nome da escola</label><input id="name" placeholder="Nome da instituição" disabled>
+<div class="row"><div><label for="short-name">Nome abreviado</label><input id="short-name" disabled></div><div><label for="identifier">Código institucional</label><input id="identifier" disabled></div></div>
+<label for="address">Endereço</label><input id="address" disabled>
+<div class="row"><div><label for="city">Cidade</label><input id="city" disabled></div><div><label for="state">Estado</label><select id="state" disabled><option value="">Selecione</option></select></div></div>
+<label for="notes">Observações</label><textarea id="notes" disabled></textarea>
+<div class="actions"><button class="primary" type="button" disabled>Salvar escola</button><button class="secondary" type="reset" disabled>Limpar</button><button class="danger" type="button" disabled>Desativar</button></div></form>
+<div class="note">Versão inicial de interface. Nenhum dado é enviado ou gravado. O cadastro será habilitado somente após revisão das permissões e integração segura com o Neon.</div>
+</section>
+</div>
+</main>
+<footer>© 2026 AnnA One. Todos os direitos reservados.<div>Desenvolvido por Prof. Elison Borges · Projeto e desenvolvimento original.</div></footer>
+<script>
+(()=>{'use strict';
+const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const API='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
+const status=document.getElementById('status'),workspace=document.getElementById('workspace'),account=document.getElementById('account'),logout=document.getElementById('logout');
+function fail(message){status.textContent=message;status.classList.add('error');workspace.hidden=true;account.textContent='Acesso não autorizado'}
+async function getJson(url,options){const response=await fetch(url,{cache:'no-store',...options});if(!response.ok)throw Error('HTTP '+response.status);return response.json()}
+async function init(){
+try{
+const session=await getJson(AUTH+'/get-session',{credentials:'include'});
+const user=session?.user||session?.data?.user;
+if(!user?.id)throw Error('Sessão ausente. Faça login novamente.');
+if(user.emailVerified!==true)throw Error('E-mail não verificado.');
+const tokenResponse=await getJson(AUTH+'/token',{credentials:'include'});
+const jwt=tokenResponse?.token||tokenResponse?.data?.token||tokenResponse?.access_token||tokenResponse?.data?.access_token;
+if(typeof jwt!=='string'||jwt.split('.').length!==3)throw Error('Token de acesso indisponível.');
+const result=await getJson(API+'/agenda_master_memberships?select=user_id,active&user_id=eq.'+encodeURIComponent(user.id)+'&active=eq.true&limit=1',{headers:{Authorization:'Bearer '+jwt,Accept:'application/json'}});
+if(!Array.isArray(result)||result.length!==1)throw Error('Perfil Master não autorizado ou não disponível pela política de acesso.');
+account.textContent=user.email;workspace.hidden=false;logout.hidden=false;status.textContent='Master autenticado. Interface inicial disponível; cadastro ainda não habilitado.';
+}catch(e){fail('Acesso Master bloqueado: '+e.message)}
+}
+logout.addEventListener('click',async()=>{try{await fetch(AUTH+'/sign-out',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:'{}'})}finally{location.replace('login.html')}});
+init();
+})();
+</script>
+</body></html>
