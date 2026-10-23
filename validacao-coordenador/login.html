@@ -12,7 +12,7 @@ label{margin:9px 0 4px}input{padding:10px 12px}button{padding:11px;margin-top:13
 .preview{margin-top:12px;font-size:12px}footer{padding:9px 12px;font-size:11px}
 @media(max-height:740px){main{padding:7px 12px}.panel{padding:16px 24px}h1{font-size:24px}p{margin-bottom:7px}label{margin:6px 0 3px}input{padding:8px 11px}button{margin-top:10px;padding:10px}.notice{margin-top:9px;padding:7px 10px}.preview{margin-top:9px}footer{padding:6px}}
 @media(max-width:480px){.panel{padding:19px 21px}}
-.help-detail{border-top:1px solid #e1e8f1;margin-top:13px;padding-top:12px}.help-detail summary{cursor:pointer;font-size:13px;font-weight:650;color:#1458aa}.help-detail section{border:0!important;padding:8px 0!important;margin:0!important}.help-detail h2{display:none}.help-detail p{font-size:12px}.notice[hidden]{display:none}.notice{background:#eef6ff;border-left-color:#086cf3;color:#214669}.panel{max-width:410px}.panel>p{margin-bottom:18px}@media(max-width:480px){main{align-items:center}} </style></head><body>
+.help-detail{border-top:1px solid #e1e8f1;margin-top:13px;padding-top:12px}.help-detail summary{cursor:pointer;font-size:13px;font-weight:650;color:#1458aa}.help-detail section{border:0!important;padding:8px 0!important;margin:0!important}.help-detail h2{display:none}.help-detail p{font-size:12px}.notice.error{background:#fff0f0;border:2px solid #d92d20;border-left:6px solid #d92d20;color:#8a1c13;font-size:13px;font-weight:700;padding:12px 14px;box-shadow:0 3px 12px #d92d2022}.notice[hidden]{display:none}.notice{background:#eef6ff;border-left-color:#086cf3;color:#214669}.panel{max-width:410px}.panel>p{margin-bottom:18px}@media(max-width:480px){main{align-items:center}} </style></head><body>
 <header><a class="brand" href="https://annaone.com.br/" aria-label="AnnA One"><img src="../assets/anna-symbol.svg" alt=""><div><b>AnnA <span>One</span></b><small>Tecnologia e Educação Juntas</small></div></a></header>
 <main><section class="panel" aria-labelledby="heading"><div class="eyebrow">AnnA One · Agenda Educacional</div><h1 id="heading">Acesso à Agenda</h1><p>Entre com sua conta institucional. O sistema identificará seu perfil automaticamente.</p>
 <form id="auth-form"><label for="email">E-mail institucional</label><input id="email" type="email" autocomplete="username" placeholder="seu@email.com" required><label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" placeholder="Sua senha" required><button id="enter" type="submit">Entrar</button></form>
@@ -24,7 +24,7 @@ label{margin:9px 0 4px}input{padding:10px 12px}button{padding:11px;margin-top:13
 (()=>{'use strict';
 const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
 const form=document.getElementById('auth-form'),status=document.getElementById('auth-status'),button=document.getElementById('enter');
-function message(text){status.hidden=false;status.textContent=text;}
+function message(text,isError=false){status.hidden=false;status.textContent=text;status.classList.toggle('error',isError);}
 async function request(path,options={}){const r=await fetch(AUTH+path,{credentials:'include',cache:'no-store',...options});const payload=await r.json().catch(()=>({}));if(!r.ok||payload.error)throw new Error(payload.error?.message||'Falha na autenticação ('+r.status+').');return payload;}
 const resetEmail=document.getElementById('reset-email'),resetStatus=document.getElementById('reset-status'),sendReset=document.getElementById('send-reset'),finishReset=document.getElementById('finish-reset');
 function resetMessage(t){resetStatus.textContent=t}
@@ -78,7 +78,7 @@ const role=await roleResponse.json();
 if(role!=='coordenacao'&&role!=='professor'){message('Sua conta está autenticada, mas não possui perfil ativo de professor ou coordenador.');return}
 message('Perfil identificado: '+(role==='coordenacao'?'Coordenação':'Professor')+'. Abrindo ambiente…');
 location.assign(role==='coordenacao'?'coordenacao.html':'professor.html');
-}catch(err){message('Não foi possível concluir o login: '+(err instanceof TypeError?'falha de comunicação/CORS ou cookies bloqueados':err.message));}
+}catch(err){const raw=String(err?.message||'');const wrongPassword=/401|invalid.*(credential|password|login)|incorrect.*password|credenciais inválidas|senha incorreta|falha na autenticação/i.test(raw);message(wrongPassword?'E-mail ou senha incorretos. Confira seus dados e tente novamente.':err instanceof TypeError?'Não foi possível conectar ao serviço. Verifique sua conexão e tente novamente.':'Não foi possível entrar. '+raw,true);}
 finally{button.disabled=false;}
 });
 })();
