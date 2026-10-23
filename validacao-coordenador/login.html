@@ -77,7 +77,7 @@ if(!roleResponse.ok)throw new Error('Consulta do perfil: HTTP '+roleResponse.sta
 const role=await roleResponse.json();
 if(role!=='coordenacao'&&role!=='professor'){message('Sua conta está autenticada, mas não possui perfil ativo de professor ou coordenador.');return}
 message('Perfil identificado: '+(role==='coordenacao'?'Coordenação':'Professor')+'. Abrindo ambiente…');
-location.assign(role==='coordenacao'?'coordenacao.html':'index.html');
+location.assign(role==='coordenacao'?'coordenacao.html':'professor.html');
 }catch(err){message('Não foi possível concluir o login: '+(err instanceof TypeError?'falha de comunicação/CORS ou cookies bloqueados':err.message));}
 finally{button.disabled=false;}
 });
