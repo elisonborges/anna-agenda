@@ -86,8 +86,17 @@ if(!destination){
 }
 if(!destination){
  const currentUser=session?.user?.id||session?.data?.user?.id;
- const adminResponse=await fetch(api+'/institution_memberships?select=role&user_id=eq.'+encodeURIComponent(currentUser)+'&active=eq.true&limit=20',{headers:{Authorization:'Bearer '+jwt,Accept:'application/json'},cache:'no-store'});
- if(adminResponse.ok){const memberships=await adminResponse.json();if(Array.isArray(memberships)&&memberships.some(m=>['institution_admin','admin','administrador','institution_owner','owner'].includes(m.role)))destination='administracao/';}
+ const adminResponse=await fetch(api+'/institution_memberships?select=institution_id,role,active&user_id=eq.'+encodeURIComponent(currentUser)+'&active=eq.true',{headers:{Authorization:'Bearer '+jwt,Accept:'application/json'},cache:'no-store'});
+ if(adminResponse.ok){
+  const memberships=await adminResponse.json();
+  const adminRoles=['admin','administrador','institution_admin','institution_owner','owner'];
+  const allowed=Array.isArray(memberships)?memberships.filter(m=>adminRoles.includes(String(m.role).toLowerCase())):[];
+  if(allowed.length){
+   const ids=allowed.map(m=>m.institution_id);
+   const institutionsResponse=await fetch(api+'/institutions?select=id,name,active&id=in.('+ids.map(encodeURIComponent).join(',')+')&active=eq.true',{headers:{Authorization:'Bearer '+jwt,Accept:'application/json'},cache:'no-store'});
+   if(institutionsResponse.ok){const institutions=await institutionsResponse.json();if(Array.isArray(institutions)&&institutions.length)destination='administracao/';}
+  }
+ }
 }
 if(!destination){message('Sua conta está autenticada, mas não possui perfil institucional ativo.');return}
 message('Perfil identificado. Abrindo ambiente…');
