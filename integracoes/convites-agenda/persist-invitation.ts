@@ -24,6 +24,8 @@ export async function prepareInvitation(raw:unknown,masterUserId:string,connecti
     (institution_id,email,full_name,phone,role,token_hash,status,expires_at,created_by_user_id)
     VALUES (${input.institution_id}::uuid,${input.email},${input.full_name},${input.phone??null},'institution_admin',${hash},'pending',${inviteExpiry()},${masterUserId}::uuid)
     RETURNING id,expires_at`;
+   await tx`INSERT INTO public.agenda_invitation_audit (invitation_id,institution_id,actor_user_id,event_type)
+    VALUES (${rows[0].id}::uuid,${input.institution_id}::uuid,${masterUserId}::uuid,'created')`;
    return {id:rows[0].id as string,expires_at:rows[0].expires_at as Date};
   });
   // Token bruto nunca é salvo. Somente o serviço de envio deve recebê-lo.
