@@ -72,6 +72,17 @@ const jwtResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-sto
 if(!jwtResponse.ok)throw new Error('Não foi possível obter a sessão para consultar o perfil.');
 const jwtData=await jwtResponse.json(),jwt=jwtData?.token||jwtData?.data?.token||jwtData?.access_token||jwtData?.data?.access_token;
 if(typeof jwt!=='string')throw new Error('Token de sessão indisponível.');
+// Retorno seguro ao convite institucional após login.
+const next=new URLSearchParams(location.search).get('next');
+if(next){
+ try{
+  const target=new URL(next,location.href);
+  const invitePage=new URL('aceitar-convite.html',location.href);
+  if(target.origin===location.origin&&target.pathname===invitePage.pathname&&/^[0-9a-f]{64}$/.test(target.searchParams.get('token')||'')){
+   location.replace(target.pathname+target.search);return;
+  }
+ }catch{}
+}
 const roleResponse=await fetch('https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1/rpc/agenda_login_destination_test',{method:'POST',headers:{Authorization:'Bearer '+jwt,'Content-Type':'application/json',Accept:'application/json'},body:'{}',cache:'no-store'});
 if(!roleResponse.ok)throw new Error('Consulta do perfil: HTTP '+roleResponse.status);
 const role=await roleResponse.json();
