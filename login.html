@@ -72,6 +72,10 @@ const jwtResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-sto
 if(!jwtResponse.ok)throw new Error('Não foi possível obter a sessão para consultar o perfil.');
 const jwtData=await jwtResponse.json(),jwt=jwtData?.token||jwtData?.data?.token||jwtData?.access_token||jwtData?.data?.access_token;
 if(typeof jwt!=='string')throw new Error('Token de sessão indisponível.');
+const masterResponse=await fetch('https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1/rpc/agenda_is_master',{method:'POST',headers:{Authorization:'Bearer '+jwt,'Content-Type':'application/json',Accept:'application/json'},body:'{}',cache:'no-store'});
+if(!masterResponse.ok)throw new Error('Consulta Master: HTTP '+masterResponse.status);
+const isMaster=await masterResponse.json();
+if(isMaster===true){message('Master identificado. Abrindo painel…');location.assign('master.html');return;}
 const roleResponse=await fetch('https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1/rpc/agenda_login_destination_test',{method:'POST',headers:{Authorization:'Bearer '+jwt,'Content-Type':'application/json',Accept:'application/json'},body:'{}',cache:'no-store'});
 if(!roleResponse.ok)throw new Error('Consulta do perfil: HTTP '+roleResponse.status);
 const role=await roleResponse.json();
