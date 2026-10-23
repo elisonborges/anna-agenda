@@ -40,3 +40,15 @@ Não alteradas as páginas `login.html`, `professor.html` e `coordenacao.html` n
 - O workspace Neon do Professor é um editor autenticado separado, já existente; a migração para o formulário principal aprovado ainda está pendente e não deve ser anunciada como concluída.
 - A Coordenação já possuía filtros e histórico autenticado no código; sua execução com dados reais e integração completa com o formulário principal continuam pendentes.
 - Não foram alterados dados escolares, registros de agendas ou páginas na branch principal.
+
+## Formulário principal do Professor — integração direta (commit 3484e2d)
+
+- Inseridos controles Neon ao lado do botão original **Salvar atividade para revisão**, sem substituir a lógica local aprovada.
+- O novo salvamento utiliza **os campos originais** `classContent`, `classActivity`, `homeActivity` e a data `day`.
+- Seleção de atribuição a partir dos vínculos institucionais autenticados e atribuições retornadas pelas políticas RLS.
+- Operações POST (novo rascunho), PATCH (rascunho existente), GET (listagem) e abertura do rascunho no **mesmo formulário principal**.
+- Conteúdo HTML limitado a elementos de texto, ênfase e listas; imagens não são persistidas por esta integração.
+- O editor Neon paralelo continua oculto. Nenhum campo do formulário aprovado foi removido.
+- Os botões Neon são separados do botão local de demonstração; o envio à Coordenação não foi acoplado a esta implementação.
+- O código foi gravado na branch isolada; **não houve teste autenticado de ponta a ponta**, nem publicação.
+- Atenção: a API Neon embutida no HTML ainda precisa ter sua correspondência com o branch Neon de teste confirmada antes de qualquer uso com dados reais.
