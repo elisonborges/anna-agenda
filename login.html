@@ -89,7 +89,7 @@ const api='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.t
 let destination=role==='coordenacao'?'validacao-coordenador/coordenacao.html':role==='professor'?'validacao-coordenador/professor.html':null;
 if(!destination){
  const currentUser=session?.user?.id||session?.data?.user?.id;
- for(const [table,page] of [['agenda_reviewer_memberships_test','validacao-coordenador/revisor-ia.html'],['agenda_reprography_memberships_test','validacao-coordenador/reprografia.html']]){
+ for(const [table,page] of [['agenda_reviewer_memberships_test','revisor-ia.html'],['agenda_reprography_memberships_test','validacao-coordenador/reprografia.html']]){
   const response=await fetch(api+'/'+table+'?select=id&user_id=eq.'+encodeURIComponent(currentUser)+'&active=eq.true&limit=1',{headers:{Authorization:'Bearer '+jwt,Accept:'application/json'},cache:'no-store'});
   if(response.ok){const memberships=await response.json();if(Array.isArray(memberships)&&memberships.length){destination=page;break}}
  }
