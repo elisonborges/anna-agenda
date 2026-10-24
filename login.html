@@ -77,6 +77,17 @@ if(typeof jwt!=='string')throw new Error('Token de sessão indisponível.');
 const masterResponse=await fetch('https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1/rpc/agenda_is_master',{method:'POST',headers:{Authorization:'Bearer '+jwt,'Content-Type':'application/json',Accept:'application/json'},body:'{}',cache:'no-store'});
 let isMaster=false;
 if(masterResponse.ok){isMaster=await masterResponse.json();}else if(masterResponse.status===400||masterResponse.status===404){const detail=await masterResponse.json().catch(()=>({}));console.warn('Consulta de perfil Master indisponível:',detail.code||masterResponse.status,detail.message||'');message('Autenticação confirmada. Verificando acesso institucional…');}else{throw new Error('Consulta Master: HTTP '+masterResponse.status);}
+const returnPath=new URLSearchParams(location.search).get('next');
+if(returnPath){
+ try{
+  const returnUrl=new URL(returnPath,location.href);
+  if(returnUrl.origin===location.origin&&returnUrl.pathname.endsWith('/preview-convite/aceitar-convite.html')&&/^[0-9a-f]{64}$/.test(returnUrl.searchParams.get('token')||'')){
+   message('Acesso confirmado. Voltando ao convite para concluir a ativação…');
+   location.replace(returnUrl.href);
+   return;
+  }
+ }catch(err){console.warn('Endereço de retorno inválido. Continuando login normal.');}
+}
 if(isMaster===true){message('Master identificado. Abrindo painel…');location.assign('master.html');return;}
 const schoolAccessResponse=await fetch('https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1/rpc/agenda_login_school_access',{method:'POST',headers:{Authorization:'Bearer '+jwt,'Content-Type':'application/json',Accept:'application/json'},body:'{}',cache:'no-store'});
 if(!schoolAccessResponse.ok)throw new Error('Não foi possível verificar o status da escola: HTTP '+schoolAccessResponse.status);
