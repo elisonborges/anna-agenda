@@ -36,6 +36,7 @@ const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon
 const form=document.getElementById('auth-form'),status=document.getElementById('auth-status'),button=document.getElementById('enter');
 function message(text,isError=false){status.hidden=false;status.textContent=text;status.classList.toggle('error',isError);}
 async function request(path,options={}){const r=await fetch(AUTH+path,{credentials:'include',cache:'no-store',...options});const payload=await r.json().catch(()=>({}));if(!r.ok||payload.error)throw new Error(payload.error?.message||'Falha na autenticação ('+r.status+').');return payload;}
+if(new URLSearchParams(location.search).get('first_access')==='1'){document.getElementById('heading').textContent='Primeiro acesso · Criar senha';document.querySelector('.panel>p').textContent='Para ativar seu acesso, informe o e-mail que recebeu o convite. Enviaremos um link seguro para criar sua senha. Depois, entre na Agenda e confirme o convite.';document.getElementById('auth-form').hidden=true;document.getElementById('reset-details').open=true;document.getElementById('reset-details').querySelector('summary').textContent='Criar minha senha';document.getElementById('reset-email').focus();}
 const resetEmail=document.getElementById('reset-email'),resetStatus=document.getElementById('reset-status'),sendReset=document.getElementById('send-reset');
 function resetMessage(t){resetStatus.textContent=t}
 if(new URLSearchParams(location.search).has('token')){location.replace('reset-senha.html'+location.search)}
