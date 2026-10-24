@@ -118,9 +118,9 @@ function fail(message){status.textContent=message;status.classList.add('error');
 async function getJson(url,options){const response=await fetch(url,{cache:'no-store',...options});if(!response.ok){let detail='';try{const body=await response.json();detail=body.message||body.details||body.code||'';}catch{}throw Error('HTTP '+response.status+(detail?' — '+detail:''));}return response.json()}
 async function init(){
 try{
-let session;try{session=await getJson(AUTH+'/get-session',{credentials:'include'});}catch(e){const invite=new URLSearchParams(location.search).get('convite_master');if(invite){location.replace('login.html?first_access=1&next='+encodeURIComponent(location.href));return;}throw e;}
+let session;try{session=await getJson(AUTH+'/get-session',{credentials:'include'});}catch(e){const invite=new URLSearchParams(location.search).get('convite_master');if(invite){location.replace('login.html?first_access=1&next='+encodeURIComponent(location.href)+'&v=20261024');return;}throw e;}
 const user=session?.user||session?.data?.user;
-if(!user?.id){const invite=new URLSearchParams(location.search).get('convite_master');if(invite){location.replace('login.html?first_access=1&next='+encodeURIComponent(location.href));return;}throw Error('Sessão ausente. Faça login novamente.');}
+if(!user?.id){const invite=new URLSearchParams(location.search).get('convite_master');if(invite){location.replace('login.html?first_access=1&next='+encodeURIComponent(location.href)+'&v=20261024');return;}throw Error('Sessão ausente. Faça login novamente.');}
 if(user.emailVerified!==true)throw Error('E-mail não verificado.');
 const tokenResponse=await getJson(AUTH+'/token',{credentials:'include'});
 const jwt=tokenResponse?.token||tokenResponse?.data?.token||tokenResponse?.access_token||tokenResponse?.data?.access_token;
