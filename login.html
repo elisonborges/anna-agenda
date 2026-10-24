@@ -82,7 +82,7 @@ const returnPath=new URLSearchParams(location.search).get('next');
 if(returnPath){
  try{
   const returnUrl=new URL(returnPath,location.href);
-  if(returnUrl.origin===location.origin&&returnUrl.pathname.endsWith('/preview-convite/aceitar-convite.html')&&/^[0-9a-f]{64}$/.test(returnUrl.searchParams.get('token')||'')){
+  if(returnUrl.origin===location.origin&&((returnUrl.pathname.endsWith('/preview-convite/aceitar-convite.html')&&/^[0-9a-f]{64}$/.test(returnUrl.searchParams.get('token')||''))||(returnUrl.pathname.endsWith('/master.html')&&/^[0-9a-f-]{36}$/.test(returnUrl.searchParams.get('convite_master')||'')))){
    message('Acesso confirmado. Voltando ao convite para concluir a ativação…');
    location.replace(returnUrl.href);
    return;
