@@ -10,7 +10,7 @@ const btn=document.getElementById('accept'),status=document.getElementById('stat
 const token=new URLSearchParams(location.search).get('token');
 const valid=typeof token==='string'&&/^[0-9a-f]{64}$/.test(token);
 function message(text){status.textContent=text;}
-function goLogin(){const next=new URL('aceitar-convite.html',location.href);const login=new URL('../login.html',location.href);login.searchParams.set('next',next.pathname+next.search);location.assign(login.href);}
+function goLogin(){const next=new URL('aceitar-convite.html',location.href);const login=new URL('../login.html',location.href);login.searchParams.set('next',next.pathname+next.search);login.searchParams.set('first_access','1');location.assign(login.href);}
 async function getJWT(){
  const sr=await fetch(AUTH+'/get-session',{credentials:'include',cache:'no-store'});
  if(!sr.ok)return null;
