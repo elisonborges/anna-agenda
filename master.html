@@ -120,7 +120,7 @@ async function init(){
 try{
 const session=await getJson(AUTH+'/get-session',{credentials:'include'});
 const user=session?.user||session?.data?.user;
-if(!user?.id)throw Error('Sessão ausente. Faça login novamente.');
+if(!user?.id){const invite=new URLSearchParams(location.search).get('convite_master');if(invite){location.replace('login.html?next='+encodeURIComponent(location.href));return;}throw Error('Sessão ausente. Faça login novamente.');}
 if(user.emailVerified!==true)throw Error('E-mail não verificado.');
 const tokenResponse=await getJson(AUTH+'/token',{credentials:'include'});
 const jwt=tokenResponse?.token||tokenResponse?.data?.token||tokenResponse?.access_token||tokenResponse?.data?.access_token;
