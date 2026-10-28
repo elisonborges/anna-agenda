@@ -56,8 +56,20 @@ footer{text-align:center;color:#63758a;font-size:11px;padding:13px 16px;border-t
 .admin-selected-actions{display:flex;gap:9px;margin:10px 0 14px}.admin-selected-actions button{flex:1}.school-admin-card #toggle-admin{display:block;width:100%;margin:15px 0 10px;background:#086cf3;color:#fff}.school-admin-card #admin-entries{margin:8px 0}.school-admin-card #admin-entries .note{padding:9px 11px;font-size:12px}.school-admin-card #admin-form-fields{border-top:1px solid #dce7f2;padding-top:15px;margin-top:12px}.school-admin-card #admin-form-fields .admin-form-actions{margin-top:15px}.school-admin-card #admin-form-fields #save-admin{flex:1}.school-admin-card #admin-to-delete{background:white}
 .admin-selected-info{display:flex;flex-direction:column;gap:4px;margin:10px 0 4px;padding:12px;border:1px solid #cbdcf1;border-radius:10px;background:#fff;font-size:13px;overflow-wrap:anywhere}.admin-selected-info strong{color:#0c2646}.admin-selected-info>span{color:#526981}.admin-selected-info .admin-status-label{align-self:flex-start;border-radius:20px;padding:4px 9px;background:#eaf0ff;color:#164a85;font-size:11px;font-weight:750}.admin-selected-info[hidden]{display:none!important}
 
-/* v0.31.8 — ações da escola alinhadas ao padrão AnnA One */
+/* v0.31.9 — ações da escola alinhadas ao padrão AnnA One */
 .school-form-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:stretch;flex-wrap:nowrap}.school-form-actions button{width:100%;min-width:0;margin:0;padding:10px 7px;min-height:42px;font-size:12px;white-space:nowrap;text-align:center}.school-form-actions button[hidden]{display:none!important}@media(max-width:420px){.school-form-actions{gap:5px}.school-form-actions button{font-size:11px;padding:9px 4px}}
+
+/* v0.31.9 — identidade visual Central AnnA One, somente apresentação */
+header{box-shadow:0 4px 18px #06182e30;padding-top:10px;padding-bottom:10px;position:relative;z-index:2}
+.brand{gap:10px}.brand img{width:53px;height:53px}.brand b{font-size:28px;font-weight:850;letter-spacing:-1.1px}.brand small{letter-spacing:.35px}.product{color:#dcecff}
+.header-actions{gap:9px}.nav-link{display:inline-flex;align-items:center;justify-content:center;border-radius:12px;min-height:39px;transition:background .15s ease,border-color .15s ease}.nav-link:hover{background:#ffffff17;border-color:#b7dcff}
+main{padding-top:28px}.master-heading{border-radius:18px;padding:20px 22px;background:linear-gradient(105deg,#eaf7ff 0%,#f7fcff 52%,#d9efff 100%);border:1px solid #d8e9f7}.master-heading h1{color:#091b42}.master-heading .subtitle{line-height:1.5}
+.panel{border-radius:17px;box-shadow:0 6px 18px #153b650b}.school-details-card,.school-admin-card,.filter-box,.admin-box{border-radius:15px}.school-card{border-radius:12px;transition:border-color .15s ease,background .15s ease}.school-card:hover{border-color:#9ed3ff;background:#f5faff}
+button,.nav-link{transition:filter .15s ease,background .15s ease,box-shadow .15s ease}button:not(:disabled):hover{filter:brightness(.97)}.primary{border-radius:12px;box-shadow:0 4px 12px #0b65ed20}.secondary,.danger{border-radius:12px}
+input,select,textarea{border-radius:11px;min-height:42px}input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #00baf6;outline-offset:2px}
+.master-tabs{flex-wrap:wrap}.master-tabs button{border-radius:12px}.admin-selected-info{border-radius:13px}.school-form-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:stretch}.school-form-actions button{width:100%;min-width:0;min-height:43px;white-space:normal;line-height:1.2;padding:9px 5px}
+footer{background:#fff;border-top:1px solid #e2eaf4;line-height:1.5}
+@media(max-width:600px){header{gap:10px}.brand img{width:43px;height:43px}.brand b{font-size:22px}.header-actions{width:100%;justify-content:space-between}.account{overflow-wrap:anywhere;min-width:0}.master-heading{padding:16px;gap:12px}.master-heading .status{min-height:0;padding:13px}.panel{padding:16px}.school-form-actions{gap:5px}.school-form-actions button{font-size:11px;padding:9px 4px}}
 </style>
 </head>
 <body>
