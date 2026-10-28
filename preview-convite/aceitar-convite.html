@@ -26,7 +26,7 @@ let jwt=null;
 (async()=>{try{jwt=await getJWT();if(!jwt){message('Entre na sua conta e confirme seu e-mail para continuar.');btn.textContent='Entrar na AnnA Agenda';btn.dataset.mode='login';}else{message('Sessão confirmada. Clique para aceitar o convite.');}btn.disabled=false;}catch{message('Não foi possível verificar sua sessão. Entre novamente.');btn.textContent='Entrar na AnnA Agenda';btn.dataset.mode='login';btn.disabled=false;}})();
 btn.addEventListener('click',async()=>{
  if(btn.dataset.mode==='login'){goLogin();return;}
- if(btn.dataset.mode==='done'){location.assign('../login.html');return;}
+ if(btn.dataset.mode==='done'){location.assign('../administracao/');return;}
  btn.disabled=true;message('Validando e ativando convite…');
  try{
   jwt=await getJWT();
@@ -39,7 +39,7 @@ btn.addEventListener('click',async()=>{
    return;
   }
   history.replaceState(null,'',location.pathname);
-  message('Convite aceito! Seu acesso institucional foi ativado.');btn.textContent='Abrir minha instituição';btn.dataset.mode='done';
+  message('Convite aceito! Seu acesso institucional foi ativado. Você já pode abrir o painel administrativo.');btn.textContent='Abrir painel administrativo';btn.dataset.mode='done';
  }catch{message('Falha de conexão. Tente novamente.');}
  finally{btn.disabled=false;}
 });
