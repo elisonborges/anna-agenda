@@ -39,13 +39,13 @@ async function init(){
   const response=await fetch(WORKER+'/v1/agenda/access',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
   const access=await response.json();
   if(!response.ok||!access.authorized)throw Error(access.error||'Sem permissão para a Agenda.');
-  const admins=access.institutions.filter(i=>['institution_admin','coordinator','coordenador','coordenacao','manager'].includes(i.role));
+  const admins=access.institutions.filter(i=>['master','institution_admin','coordinator','coordenador','coordenacao','manager'].includes(i.role));
   institution.replaceChildren();
   institution.append(new Option('Selecione uma instituição',''));
   admins.forEach(i=>institution.append(new Option(i.institution_name,i.institution_id)));
-  if(!admins.length){adminGrid.hidden=true;say('Acesso à Agenda autorizado. Esta área administrativa exige perfil de coordenação ou administrador institucional.');return}
+  if(!admins.length&&!access.is_master){adminGrid.hidden=true;say('Acesso à Agenda autorizado. Esta área administrativa exige perfil de coordenação ou administrador institucional.');return}
   body.replaceChildren();const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=4;cell.className='muted';cell.textContent='Listagem de usuários ainda não integrada ao serviço central de administração.';row.append(cell);body.append(row);
-  say('Sessão central AnnA One verificada. Acesso administrativo em '+admins.length+' instituição(ões). Cadastro de usuários permanece indisponível.');
+  say(access.is_master?'Acesso Master global autorizado. '+admins.length+' instituição(ões) ativa(s).':'Sessão central AnnA One verificada. Acesso administrativo em '+admins.length+' instituição(ões). Cadastro de usuários permanece indisponível.');
  }catch(error){adminGrid.hidden=true;say('Administração: '+error.message+' Acesse o portal AnnA One para autenticar.');}
 }
 init();
