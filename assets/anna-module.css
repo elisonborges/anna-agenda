@@ -1,0 +1,20 @@
+/* Identidade compartilhada com a Administração AnnA Agenda. */
+@media screen {
+:root{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#0c2146;background:#f5f9ff}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;background:#f5f9ff;color:#0c2146;min-height:100vh;display:flex;flex-direction:column}
+header.anna-top{background:#0c2646;color:#fff;padding:10px max(20px,5vw);box-shadow:0 4px 18px #06182e30;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.anna-top .brand{display:flex;align-items:center;gap:11px;color:inherit;text-decoration:none;min-width:0}
+.brand img{width:49px;height:49px;flex:none}.brand b{font-size:25px;letter-spacing:-1px}.brand b span{color:#198dff}.anna-top .brand small{display:block;font-size:10px;letter-spacing:.3px;color:#dcecff;margin-top:3px}.anna-product{display:block;color:#e3f0ff;font-size:12px;font-weight:650;margin-top:5px}
+.anna-back{border:1px solid #7897ba;border-radius:9px;padding:10px 15px;color:white;text-decoration:none;font-size:13px;font-weight:700}.anna-back:hover{background:#20486f}
+main{width:100%;flex:1;margin:0 auto;padding:28px 20px 34px;min-width:0}
+main>h1,.editor>h1{font-size:29px;letter-spacing:-.7px;margin:8px 0 12px}
+.card,.panel{background:white;border-color:#dce7f2;border-radius:18px;box-shadow:0 12px 30px #123a6a13;min-width:0}
+.card h2,.panel h2{margin-top:0}
+input:not([type=checkbox]):not([type=radio]),select,textarea{background:#f4f7fb;border-color:#cbd9e9;border-radius:10px;color:#0c2146;min-width:0}
+button{background:#086cf3;border-radius:12px;font-weight:700;min-height:42px}button:not(:disabled):hover{filter:brightness(.92)}button.secondary,button.alt{background:#eaf0ff;color:#164a85}button.warn{background:#fff0f0;color:#9c2525}button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #198dff;outline-offset:2px}
+.page-footer{text-align:center;padding:13px 16px;color:#63758a;font-size:11px}.page-footer div{margin-top:3px}
+.grid>*,.row>*{min-width:0}.actions{align-items:center}
+@media(max-width:480px){header.anna-top{padding:9px 16px;gap:10px}.brand img{width:43px;height:43px}.brand b{font-size:22px}.anna-back{padding:8px 11px}main{padding:20px 14px}.card,.panel{padding:15px}main>h1,.editor>h1{font-size:25px}.actions button{flex:1 1 auto}}
+}
+@media print{.anna-top,.page-footer,#authGate{display:none!important}}
