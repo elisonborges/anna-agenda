@@ -51,8 +51,25 @@ try{const redirectTo=new URL('reset-senha.html',location.href);await request('/r
 catch(err){resetMessage('Não foi possível solicitar a recuperação: '+err.message)}
 finally{sendReset.disabled=false}
 });
+const CENTRAL_AUTH='https://ep-spring-snow-b6mci3yx.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+async function centralAccess(){
+ const session=await fetch(CENTRAL_AUTH+'/get-session',{credentials:'include',cache:'no-store'});
+ if(!session.ok)return false;
+ const s=await session.json();if(!s?.user?.id&&!s?.data?.user?.id)return false;
+ const response=await fetch(CENTRAL_AUTH+'/token',{credentials:'include',cache:'no-store'});
+ if(!response.ok)return false;
+ const t=await response.json(),token=t?.token||t?.data?.token||t?.access_token;
+ if(!token)return false;
+ const a=await fetch('https://anna-one-auditoria.elisonborg.workers.dev/v1/agenda/access',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+ if(!a.ok)return false;
+ const access=await a.json();if(!access.authorized)return false;
+ if(access.is_master||access.institutions?.some(i=>['institution_admin','coordinator','coordenacao','coordenador','manager'].includes(i.role))){location.assign('administracao/');return true}
+ location.assign('roteiros-estudos/institucional.html');return true;
+}
+if(!new URLSearchParams(location.search).has('next'))centralAccess().catch(()=>{});
 form.addEventListener('submit',async e=>{e.preventDefault();button.disabled=true;message('Verificando credenciais com o Neon Auth…');const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;
 try{
+if(!new URLSearchParams(location.search).has('next')){try{const central=await fetch(CENTRAL_AUTH+'/sign-in/email',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});if(central.ok&&await centralAccess()){document.getElementById('password').value='';return}}catch(err){console.warn('Login central indisponível');}}
 await request('/sign-in/email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
 document.getElementById('password').value='';
 const session=await request('/get-session');
