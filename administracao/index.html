@@ -19,31 +19,34 @@
 <tr><td><strong>Editor de roteiros</strong></td><td>Preparação local de roteiros, impressão em PDF e backup.</td><td>Local · v0.1</td><td><a class="table-action" href="../roteiros-estudos/">Abrir editor</a></td></tr>
 </tbody></table></div></section>
 <section class="admin-section"><div class="section-heading"><div><span class="eyebrow">Gestão institucional</span><h2>Usuários e permissões</h2><p>Cadastros e permissões permanecem indisponíveis até a integração segura.</p></div><span class="status-pill">Em integração</span></div><div class="grid admin-grid"><section class="panel"><h2>Cadastro de usuário</h2><form id="cadastro"><label for="nome">Nome completo</label><input id="nome" autocomplete="name" placeholder="Nome do profissional" required><label for="email">E-mail institucional</label><input id="email" type="email" autocomplete="off" placeholder="usuario@instituicao.edu.br" required><label for="instituicao">Instituição</label><select id="instituicao" required><option value="">Selecione uma instituição</option><option value="demo">Instituição demonstrativa (somente exemplo)</option></select><label for="perfil">Perfil de acesso</label><select id="perfil" required><option value="">Selecione o perfil</option><option>Professor</option><option>Coordenação</option><option>Revisora IA</option><option>Reprografia</option><option>Administrador</option></select><button type="submit" disabled title="Aguardando integração autenticada">Cadastrar usuário (indisponível)</button><p class="muted">O cadastro definitivo deverá ser feito por administrador autenticado, com autorização no servidor e registro de auditoria. Nunca por chaves administrativas expostas no navegador.</p></form></section><section class="panel"><h2>Controle de acesso</h2><div class="table-scroll"><table class="options-table compact"><thead><tr><th>Perfil</th><th>Permissão prevista</th></tr></thead><tbody><tr><td>Professor</td><td>Conteúdos das próprias disciplinas</td></tr><tr><td>Coordenação</td><td>Acompanhamento e aprovação de roteiros</td></tr><tr><td>Revisora IA</td><td>Revisão conforme atribuições</td></tr><tr><td>Reprografia</td><td>Documentos liberados para impressão</td></tr><tr><td>Administrador</td><td>Gestão institucional e acessos</td></tr></tbody></table></div><h2 style="margin-top:24px">Situação das funcionalidades</h2><div class="table-scroll"><table class="options-table compact"><thead><tr><th>Recurso</th><th>Situação</th></tr></thead><tbody><tr><td>Autenticação administrativa nesta página</td><td><span class="tag">Em integração</span></td></tr><tr><td>Cadastro e provisionamento de usuários</td><td><span class="tag">Pendente</span></td></tr><tr><td>Listagem, edição e revogação</td><td><span class="tag">Pendente</span></td></tr></tbody></table></div></section><section class="panel wide"><h2>Usuários da instituição</h2><table><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Situação</th></tr></thead><tbody><tr><td colspan="4" class="muted">Aguardando autenticação institucional…</td></tr></tbody></table></section></div></section>
-</main><footer class="page-footer">© 2026 AnnA One. Todos os direitos reservados.<div>Desenvolvido por Prof. Elison Borges · Projeto e desenvolvimento original.</div></footer><script>
-(()=>{'use strict';
-const AUTH='https://ep-lingering-breeze-b6xo2cst.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
-const API='https://ep-lingering-breeze-b6xo2cst.apirest.c-2.sa-east-1.aws.neon.tech/neondb/rest/v1';
-const status=document.getElementById('connectionStatus'),body=document.querySelector('tbody'),institution=document.getElementById('instituicao');
-const say=(msg)=>{status.textContent=msg};
-const request=async(url,token)=>{const res=await fetch(url,{credentials:'omit',headers:{Authorization:'Bearer '+token,Accept:'application/json'},cache:'no-store'});if(!res.ok)throw Error('Consulta recusada pelo Neon (HTTP '+res.status+').');return res.json()};
-async function init(){try{
-const sessionResponse=await fetch(AUTH+'/get-session',{credentials:'include',cache:'no-store'});if(!sessionResponse.ok)throw Error('Entre primeiro pelo login institucional.');
-const session=await sessionResponse.json(),user=session?.user||session?.data?.user;
-if(!user?.id)throw Error('Sessão não encontrada. Entre pelo login institucional.');
-const tokenResponse=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store'});if(!tokenResponse.ok)throw Error('Sessão expirada.');
-const tokenData=await tokenResponse.json(),token=tokenData?.token||tokenData?.data?.token||tokenData?.access_token||tokenData?.data?.access_token;
-if(typeof token!=='string'||token.split('.').length!==3)throw Error('Token institucional inválido.');
-const memberships=await request(API+'/institution_memberships?select=institution_id,role,active&user_id=eq.'+encodeURIComponent(user.id)+'&active=eq.true',token);
-const adminRoles=['admin','administrador','institution_admin','institution_owner','owner'];
-const allowed=memberships.filter(m=>adminRoles.includes(String(m.role).toLowerCase()));
-if(!allowed.length)throw Error('Acesso negado: conta sem perfil de Administrador institucional.');
-const ids=allowed.map(m=>m.institution_id);
-const institutions=await request(API+'/institutions?select=id,name,active&id=in.('+ids.map(encodeURIComponent).join(',')+')&active=eq.true',token);
-institution.replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecione uma instituição';institution.append(placeholder);
-for(const inst of institutions){const opt=document.createElement('option');opt.value=inst.id;opt.textContent=inst.name;institution.append(opt)}
-body.replaceChildren();const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=4;cell.className='muted';cell.textContent='Conexão autenticada. A listagem de usuários ainda depende de revisão das políticas e do serviço administrativo seguro.';row.append(cell);body.append(row);
-say('Conectado ao Neon de testes. Administrador autorizado para '+institutions.length+' instituição(ões). Cadastro e alterações permanecem desativados.');
-}catch(e){say('Administração bloqueada: '+e.message);document.querySelector('.admin-grid').hidden=true;}}
+</main><footer class="page-footer">© 2026 AnnA One. Todos os direitos reservados.<div>Desenvolvido por Prof. Elison Borges · Projeto e desenvolvimento original.</div></footer><script type="module">
+const status=document.getElementById('connectionStatus');
+const adminGrid=document.querySelector('.admin-grid');
+const institution=document.getElementById('instituicao');
+const body=document.querySelector('.admin-grid tbody');
+const say=(message)=>{status.textContent=message};
+const AUTH='https://ep-spring-snow-b6mci3yx.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth';
+const WORKER='https://anna-one-auditoria.elisonborg.workers.dev';
+async function init(){
+ try{
+  const {createAuthClient}=await import('https://esm.sh/@neondatabase/auth@0.5.0-beta?bundle');
+  const auth=createAuthClient(AUTH);
+  const session=await auth.getSession();
+  if(!session?.data?.user&&!session?.data?.session?.user)throw Error('Entre pelo portal AnnA One.');
+  let token=session?.data?.session?.access_token;
+  if(!token){const r=await fetch(AUTH+'/token',{credentials:'include',cache:'no-store'});if(r.ok){const t=await r.json();token=t?.token||t?.data?.token||t?.access_token}}
+  if(!token)throw Error('Token central indisponível. Entre novamente no AnnA One.');
+  const response=await fetch(WORKER+'/v1/agenda/access',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+  const access=await response.json();
+  if(!response.ok||!access.authorized)throw Error(access.error||'Sem permissão para a Agenda.');
+  const admins=access.institutions.filter(i=>['institution_admin','coordinator','coordenador','coordenacao','manager'].includes(i.role));
+  institution.replaceChildren();
+  institution.append(new Option('Selecione uma instituição',''));
+  admins.forEach(i=>institution.append(new Option(i.institution_name,i.institution_id)));
+  if(!admins.length){adminGrid.hidden=true;say('Acesso à Agenda autorizado. Esta área administrativa exige perfil de coordenação ou administrador institucional.');return}
+  body.replaceChildren();const row=document.createElement('tr'),cell=document.createElement('td');cell.colSpan=4;cell.className='muted';cell.textContent='Listagem de usuários ainda não integrada ao serviço central de administração.';row.append(cell);body.append(row);
+  say('Sessão central AnnA One verificada. Acesso administrativo em '+admins.length+' instituição(ões). Cadastro de usuários permanece indisponível.');
+ }catch(error){adminGrid.hidden=true;say('Administração: '+error.message+' Acesse o portal AnnA One para autenticar.');}
+}
 init();
-})();
 </script></body></html>
